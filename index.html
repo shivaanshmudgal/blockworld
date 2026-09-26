@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BlockWorld — Build. Explore. Survive.</title>
+  <meta
+    name="description"
+    content="BlockWorld is an original voxel adventure game. Build, explore, mine, and survive."
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #10151b;
+      color: #ffffff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(10, 14, 18, 0.92);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-inner {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .logo span {
+      color: #7ee787;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: #cbd5df;
+      font-size: 15px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    .nav-play {
+      padding: 11px 18px;
+      border-radius: 10px;
+      background: #7ee787;
+      color: #08110a !important;
+      font-weight: 800;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 680px;
+      display: grid;
+      place-items: center;
+      padding: 90px 16px 80px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(74, 128, 255, 0.20), transparent 35%),
+        linear-gradient(180deg, #152337 0%, #10151b 72%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.08;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      width: min(900px, 100%);
+      text-align: center;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(126, 231, 135, 0.35);
+      border-radius: 999px;
+      background: rgba(126, 231, 135, 0.08);
+      color: #b7efbd;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero h1 {
+      font-size: clamp(52px, 10vw, 100px);
+      line-height: 0.95;
+      letter-spacing: -4px;
+      margin-bottom: 25px;
+    }
+
+    .hero h1 .green {
+      color: #7ee787;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      color: #c8d1da;
+      font-size: clamp(17px, 2.5vw, 21px);
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 24px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 16px;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: #7ee787;
+      color: #08110a;
+    }
+
+    .btn-primary:hover {
+      background: #96f49e;
+    }
+
+    .btn-secondary {
+      border: 1px solid #43515f;
+      background: rgba(255, 255, 255, 0.04);
+      color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+      border-color: #667788;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .section {
+      width: min(1100px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 90px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(30px, 5vw, 46px);
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #9eabb7;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature {
+      padding: 28px;
+      border: 1px solid #28323c;
+      border-radius: 18px;
+      background: #151c23;
+    }
+
+    .feature-icon {
+      font-size: 34px;
+      margin-bottom: 16px;
+    }
+
+    .feature h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: #9eabb7;
+      font-size: 15px;
+    }
+
+    .play-card {
+      border: 1px solid #2c3946;
+      border-radius: 22px;
+      padding: 45px 25px;
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(126, 231, 135, 0.12), transparent 45%),
+        #151c23;
+    }
+
+    .play-card h2 {
+      font-size: clamp(30px, 5vw, 48px);
+      margin-bottom: 12px;
+    }
+
+    .play-card p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: #aeb8c1;
+    }
+
+    .play-card .btn {
+      margin-top: 28px;
+    }
+
+    .about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .about-card {
+      padding: 30px;
+      border: 1px solid #28323c;
+      border-radius: 18px;
+      background: #151c23;
+    }
+
+    .about-card h3 {
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+
+    .about-card p {
+      color: #aeb8c1;
+    }
+
+    .about-card strong {
+      color: #ffffff;
+    }
+
+    .disclaimer {
+      margin-top: 35px;
+      padding: 18px;
+      border-left: 3px solid #7ee787;
+      background: rgba(126, 231, 135, 0.05);
+      color: #aeb8c1;
+      font-size: 14px;
+    }
+
+    footer {
+      border-top: 1px solid #222c35;
+      padding: 30px 16px;
+      color: #7f8c98;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .footer-name {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    @media (max-width: 800px) {
+      .nav-links a:not(.nav-play) {
+        display: none;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .about {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 600px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .nav-inner {
+        min-height: 62px;
+      }
+
+      .logo {
+        font-size: 21px;
+      }
+
+      .nav-play {
+        padding: 9px 14px;
+        font-size: 14px;
+      }
+
+      .hero {
+        padding-top: 70px;
+      }
+
+      .hero h1 {
+        letter-spacing: -2px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .section {
+        padding: 70px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">Block<span>World</span></a>
+
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <a href="game.html" class="nav-play">PLAY NOW</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <div class="hero-grid"></div>
+
+      <div class="hero-content">
+        <div class="badge">ORIGINAL VOXEL ADVENTURE</div>
+
+        <h1>
+          Welcome to<br>
+          <span class="green">BlockWorld</span>
+        </h1>
+
+        <p>
+          Build your world. Explore new places. Mine resources.
+          Survive the night and create your own adventure.
+        </p>
+
+        <div class="hero-buttons">
+          <a href="game.html" class="btn btn-primary">
+            🎮 PLAY BLOCKWORLD
+          </a>
+
+          <a href="#features" class="btn btn-secondary">
+            Explore Features
+          </a>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section" id="features">
+      <div class="section-title">
+        <h2>Build Your World</h2>
+        <p>
+          Everything you need for a block-based adventure.
+        </p>
+      </div>
+
+      <div class="features">
+
+        <article class="feature">
+          <div class="feature-icon">⛏️</div>
+          <h3>Mine & Build</h3>
+          <p>
+            Gather resources, break blocks and build whatever
+            you can imagine.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">🌎</div>
+          <h3>Explore</h3>
+          <p>
+            Travel across a procedurally generated world filled
+            with different environments.
+          </p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">🌙</div>
+          <h3>Survive</h3>
+          <p>
+            Explore during the day, keep moving and experience
+            the changing world around you.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+
+    <section class="section">
+      <div class="play-card">
+        <h2>Ready to play?</h2>
+
+        <p>
+          Jump straight into BlockWorld and start building.
+          No installation required.
+        </p>
+
+        <a href="game.html" class="btn btn-primary">
+          🚀 START GAME
+        </a>
+      </div>
+    </section>
+
+
+    <section class="section" id="about">
+      <div class="section-title">
+        <h2>About BlockWorld</h2>
+        <p>
+          A small game project built around creativity,
+          exploration and voxel-style gameplay.
+        </p>
+      </div>
+
+      <div class="about">
+
+        <div class="about-card">
+          <h3>🎮 The Game</h3>
+          <p>
+            BlockWorld is an original voxel game where you can
+            explore a block-based environment, mine materials,
+            place blocks and build your own creations.
+          </p>
+        </div>
+
+        <div class="about-card">
+          <h3>🌐 Play Online</h3>
+          <p>
+            The game runs directly in your browser, making it
+            easy to play from a computer without downloading
+            a traditional desktop launcher.
+          </p>
+        </div>
+
+      </div>
+
+      <div class="disclaimer">
+        <strong>BlockWorld</strong> is an original voxel game and
+        is not affiliated with or endorsed by Mojang or Microsoft.
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 <span class="footer-name">BlockWorld</span> ·
+    Built as an original game project.
+  </footer>
+
+</body>
+</html>
