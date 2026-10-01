@@ -2,4900 +2,1100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>BlockWorld Online</title>
-
 <style>
-
-*{
-    box-sizing:border-box;
-}
-
-html,
-body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#000;
-    font-family:Arial,sans-serif;
-}
-
-canvas{
-    display:block;
-}
-
-#ui{
-    position:fixed;
-    inset:0;
-    color:white;
-    pointer-events:none;
-    text-shadow:0 2px 3px #000;
-}
-
-#top{
-    position:absolute;
-    top:12px;
-    left:12px;
-
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-}
-
-.pill{
-    background:rgba(0,0,0,.65);
-    border:1px solid rgba(255,255,255,.15);
-    border-radius:9px;
-    padding:8px 11px;
-}
-
-#status{
-    position:absolute;
-    top:67px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    background:rgba(0,0,0,.72);
-
-    padding:7px 12px;
-
-    border-radius:8px;
-
-    font-size:13px;
-
-    max-width:90vw;
-
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
-}
-
-#crosshair{
-    position:absolute;
-
-    width:18px;
-    height:18px;
-
-    left:50%;
-    top:50%;
-
-    transform:translate(-50%,-50%);
-}
-
-#crosshair::before,
-#crosshair::after{
-    content:"";
-
-    position:absolute;
-
-    background:white;
-
-    box-shadow:0 0 3px black;
-}
-
-#crosshair::before{
-    width:2px;
-    height:18px;
-
-    left:8px;
-}
-
-#crosshair::after{
-    width:18px;
-    height:2px;
-
-    top:8px;
-}
-
-#hotbar{
-    position:absolute;
-
-    left:50%;
-    bottom:14px;
-
-    transform:translateX(-50%);
-
-    display:flex;
-
-    gap:5px;
-
-    pointer-events:auto;
-}
-
-.slot{
-    position:relative;
-
-    width:50px;
-    height:50px;
-
-    border:2px solid #666;
-
-    border-radius:8px;
-
-    background:rgba(0,0,0,.72);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    cursor:pointer;
-}
-
-.slot.selected{
-    border-color:white;
-
-    box-shadow:
-        0 0 0 2px #53c451;
-}
-
-.swatch{
-    width:27px;
-    height:27px;
-
-    border:1px solid rgba(0,0,0,.5);
-}
-
-.slotNumber{
-    position:absolute;
-
-    left:4px;
-    top:2px;
-
-    font-size:10px;
-}
-
-.slotCount{
-    position:absolute;
-
-    right:4px;
-    bottom:2px;
-
-    font-size:11px;
-}
-
-#help{
-    position:absolute;
-
-    right:12px;
-    bottom:12px;
-
-    background:rgba(0,0,0,.58);
-
-    border:
-        1px solid
-        rgba(255,255,255,.14);
-
-    border-radius:9px;
-
-    padding:9px 11px;
-
-    font-size:12px;
-
-    line-height:1.45;
-}
-
-#startScreen{
-    position:absolute;
-
-    inset:0;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    background:
-        linear-gradient(
-            rgba(8,30,45,.25),
-            rgba(0,0,0,.7)
-        );
-
-    pointer-events:auto;
-}
-
-.card{
-    width:
-        min(
-            590px,
-            calc(100vw - 30px)
-        );
-
-    background:
-        rgba(10,15,21,.92);
-
-    border:
-        1px solid
-        rgba(255,255,255,.17);
-
-    border-radius:18px;
-
-    padding:28px;
-
-    text-align:center;
-}
-
-.card h1{
-    margin:
-        0 0 8px;
-
-    font-size:44px;
-
-    letter-spacing:2px;
-}
-
-.card p{
-    color:#d9e3e7;
-
-    line-height:1.5;
-}
-
-.card input{
-    width:
-        min(
-            280px,
-            90%
-        );
-
-    padding:11px;
-
-    border:
-        1px solid #777;
-
-    border-radius:9px;
-
-    background:#111820;
-
-    color:white;
-
-    font-size:16px;
-}
-
-.buttons{
-    display:flex;
-
-    justify-content:center;
-
-    flex-wrap:wrap;
-
-    gap:8px;
-
-    margin-top:12px;
-}
-
-button{
-    border:0;
-
-    border-radius:9px;
-
-    background:#4ca548;
-
-    color:white;
-
-    padding:11px 17px;
-
-    font-size:15px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-}
-
-button.secondary{
-    background:#364047;
-}
-
-#roomBox{
-    display:none;
-
-    margin-top:15px;
-}
-
-#roomCode{
-    margin:9px 0;
-
-    padding:10px;
-
-    background:#050709;
-
-    border-radius:8px;
-
-    word-break:break-all;
-
-    user-select:all;
-
-    font-weight:bold;
-}
-
-#toast{
-    position:absolute;
-
-    top:105px;
-
-    left:50%;
-
-    transform:
-        translateX(-50%);
-
-    background:
-        rgba(0,0,0,.75);
-
-    padding:7px 12px;
-
-    border-radius:8px;
-
-    opacity:0;
-
-    transition:
-        opacity .15s;
-}
-
-#touchControls{
-    display:none;
-
-    position:absolute;
-
-    left:12px;
-    bottom:80px;
-
-    pointer-events:auto;
-
-    flex-direction:column;
-
-    gap:7px;
-}
-
-.touchGrid{
-    display:grid;
-
-    grid-template-columns:
-        46px 46px 46px;
-
-    gap:5px;
-}
-
-.touchButton{
-    width:46px;
-    height:46px;
-
-    border-radius:9px;
-
-    border:
-        1px solid
-        rgba(255,255,255,.25);
-
-    background:
-        rgba(0,0,0,.58);
-
-    color:white;
-
-    font-size:18px;
-}
-
-.touchUp{
-    grid-column:2;
-}
-
-.touchLeft{
-    grid-column:1;
-}
-
-.touchDown{
-    grid-column:2;
-}
-
-.touchRight{
-    grid-column:3;
-}
-
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,sans-serif}
+canvas{display:block}
+#ui{position:fixed;inset:0;color:#fff;pointer-events:none;text-shadow:0 2px 3px #000}
+#top{position:absolute;top:12px;left:12px;display:flex;flex-wrap:wrap;gap:7px}
+.pill{background:rgba(0,0,0,.68);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:8px 10px}
+#status{position:absolute;top:62px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.72);padding:7px 12px;border-radius:8px;font-size:13px;max-width:90vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toast{position:absolute;top:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);padding:7px 12px;border-radius:8px;opacity:0;transition:opacity .15s}
+#crosshair{position:absolute;width:18px;height:18px;left:50%;top:50%;transform:translate(-50%,-50%)}
+#crosshair:before,#crosshair:after{content:"";position:absolute;background:#fff;box-shadow:0 0 3px #000}
+#crosshair:before{width:2px;height:18px;left:8px}
+#crosshair:after{width:18px;height:2px;top:8px}
+#hotbar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:4px;pointer-events:auto}
+.slot{position:relative;width:48px;height:48px;border:2px solid #666;border-radius:8px;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.slot.selected{border-color:#fff;box-shadow:0 0 0 2px #53c451}
+.swatch{width:26px;height:26px;border:1px solid rgba(0,0,0,.55)}
+.slotNumber{position:absolute;left:4px;top:2px;font-size:10px}
+.slotCount{position:absolute;right:4px;bottom:2px;font-size:11px}
+#help{position:absolute;right:12px;bottom:12px;background:rgba(0,0,0,.58);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:9px 11px;font-size:12px;line-height:1.45}
+#startScreen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(rgba(8,30,45,.25),rgba(0,0,0,.72));pointer-events:auto}
+.card{width:min(600px,calc(100vw - 28px));background:rgba(10,15,21,.94);border:1px solid rgba(255,255,255,.17);border-radius:18px;padding:26px;text-align:center}
+.card h1{margin:0 0 8px;font-size:44px;letter-spacing:2px}
+.card p{color:#d9e3e7;line-height:1.5}
+.card input{width:min(290px,90%);padding:11px;border:1px solid #777;border-radius:9px;background:#111820;color:#fff;font-size:16px}
+.buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:12px}
+button{border:0;border-radius:9px;background:#4ca548;color:#fff;padding:11px 16px;font-size:15px;font-weight:bold;cursor:pointer}
+button.secondary{background:#364047}
+#roomBox{display:none;margin-top:14px}
+#roomCode{margin:9px 0;padding:10px;background:#050709;border-radius:8px;word-break:break-all;user-select:all;font-weight:bold}
+#touchControls{display:none;position:absolute;left:12px;bottom:80px;pointer-events:auto;flex-direction:column;gap:7px}
+.touchGrid{display:grid;grid-template-columns:46px 46px 46px;gap:5px}
+.touchButton{width:46px;height:46px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.58);color:#fff;font-size:18px;padding:0}
+.touchUp{grid-column:2}.touchLeft{grid-column:1}.touchDown{grid-column:2}.touchRight{grid-column:3}
 @media(max-width:760px){
-
-    #help{
-        display:none;
-    }
-
-    #touchControls{
-        display:flex;
-    }
-
-    .slot{
-        width:43px;
-        height:43px;
-    }
-
-    .swatch{
-        width:23px;
-        height:23px;
-    }
+#help{display:none}
+#touchControls{display:flex}
+.slot{width:43px;height:43px}.swatch{width:23px;height:23px}
 }
-
 </style>
-
 <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
-
 </head>
-
 <body>
-
 <div id="ui">
-
-    <div id="top">
-
-        <div class="pill">
-            <b>🌍 BlockWorld Online</b>
-        </div>
-
-        <div class="pill">
-            Players:
-            <span id="playerCount">
-                1
-            </span>
-        </div>
-
-        <div class="pill">
-            Day:
-            <span id="day">
-                1
-            </span>
-        </div>
-
-        <div class="pill">
-            Mode:
-            <span id="mode">
-                Solo
-            </span>
-        </div>
-
+  <div id="top">
+    <div class="pill"><b>🌍 BlockWorld Online</b></div>
+    <div class="pill">Players: <span id="playerCount">1</span></div>
+    <div class="pill">Day: <span id="day">1</span></div>
+    <div class="pill">Mode: <span id="mode">Solo</span></div>
+  </div>
+  <div id="status">Ready</div>
+  <div id="toast"></div>
+  <div id="crosshair"></div>
+  <div id="hotbar"></div>
+  <div id="help">
+    W/A/S/D = move<br>
+    Mouse = look<br>
+    Space = jump<br>
+    Shift = sprint<br>
+    Left click = mine<br>
+    Right click = place<br>
+    Mouse wheel = block<br>
+    1-7 = block<br>
+    R = undo last change
+  </div>
+  <div id="touchControls">
+    <div class="touchGrid">
+      <button class="touchButton touchUp" data-key="KeyW">▲</button>
+      <button class="touchButton touchLeft" data-key="KeyA">◀</button>
+      <button class="touchButton touchDown" data-key="KeyS">▼</button>
+      <button class="touchButton touchRight" data-key="KeyD">▶</button>
     </div>
-
-
-    <div id="status">
-        Ready
-    </div>
-
-
-    <div id="crosshair"></div>
-
-
-    <div id="toast"></div>
-
-
-    <div id="hotbar"></div>
-
-
-    <div id="help">
-
-        W / S =
-        forward / backward
-
-        <br>
-
-        A / D =
-        left / right
-
-        <br>
-
-        Mouse =
-        look
-
-        <br>
-
-        Space =
-        jump
-
-        <br>
-
-        Shift =
-        sprint
-
-        <br>
-
-        Left Click =
-        mine
-
-        <br>
-
-        Right Click =
-        place
-
-        <br>
-
-        1-7 =
-        select block
-
-    </div>
-
-
-    <div id="touchControls">
-
-        <div class="touchGrid">
-
-            <button
-                class="touchButton touchUp"
-                data-key="KeyW"
-            >
-                ▲
-            </button>
-
-            <button
-                class="touchButton touchLeft"
-                data-key="KeyA"
-            >
-                ◀
-            </button>
-
-            <button
-                class="touchButton touchDown"
-                data-key="KeyS"
-            >
-                ▼
-            </button>
-
-            <button
-                class="touchButton touchRight"
-                data-key="KeyD"
-            >
-                ▶
-            </button>
-
+    <button class="touchButton" data-key="Space">⤒</button>
+  </div>
+  <div id="startScreen">
+    <div class="card">
+      <h1>BLOCKWORLD</h1>
+      <p>Build without the annoying parts.</p>
+      <p style="font-size:13px">Undo block changes, preview placement, use the scroll wheel, and play online.</p>
+      <input id="playerName" maxlength="16" placeholder="Your player name">
+      <div class="buttons">
+        <button id="soloButton">PLAY SOLO</button>
+        <button id="createButton">CREATE ONLINE WORLD</button>
+        <button id="showJoinButton" class="secondary">JOIN FRIEND</button>
+      </div>
+      <div id="roomBox">
+        <p>Your room code:</p>
+        <div id="roomCode">Connecting...</div>
+        <p style="font-size:13px">Send this code to your friend.</p>
+        <input id="joinCode" maxlength="100" placeholder="Friend's room code">
+        <div class="buttons">
+          <button id="joinButton">JOIN WORLD</button>
+          <button id="hideJoinButton" class="secondary">BACK</button>
         </div>
-
-
-        <button
-            class="touchButton"
-            data-key="Space"
-        >
-            ⤒
-        </button>
-
+      </div>
     </div>
-
-
-    <div id="startScreen">
-
-        <div class="card">
-
-            <h1>
-                BLOCKWORLD
-            </h1>
-
-            <p>
-                Explore, mine, build and play.
-            </p>
-
-            <p
-                style="
-                    font-size:13px
-                "
-            >
-                Test SOLO first.
-                Multiplayer is optional.
-            </p>
-
-
-            <input
-                id="playerName"
-                maxlength="16"
-                placeholder="Your player name"
-            >
-
-
-            <div class="buttons">
-
-                <button
-                    id="soloButton"
-                >
-                    PLAY SOLO
-                </button>
-
-
-                <button
-                    id="createButton"
-                >
-                    CREATE ONLINE WORLD
-                </button>
-
-
-                <button
-                    id="showJoinButton"
-                    class="secondary"
-                >
-                    JOIN FRIEND
-                </button>
-
-            </div>
-
-
-            <div id="roomBox">
-
-                <p>
-                    Your room code:
-                </p>
-
-
-                <div id="roomCode">
-                    Connecting...
-                </div>
-
-
-                <p
-                    style="
-                        font-size:13px
-                    "
-                >
-                    Send this code
-                    to your friend.
-                </p>
-
-
-                <input
-                    id="joinCode"
-                    maxlength="100"
-                    placeholder="Friend's room code"
-                >
-
-
-                <div class="buttons">
-
-                    <button
-                        id="joinButton"
-                    >
-                        JOIN WORLD
-                    </button>
-
-
-                    <button
-                        id="hideJoinButton"
-                        class="secondary"
-                    >
-                        BACK
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+  </div>
 </div>
 
-
 <script type="module">
-
-import * as THREE from
-"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
-
-
-/* ============================================================
-   SCENE
-============================================================ */
-
-const scene =
-    new THREE.Scene();
-
-
-scene.background =
-    new THREE.Color(
-        0x8ed1f3
-    );
-
-
-scene.fog =
-    new THREE.Fog(
-        0x8ed1f3,
-        35,
-        110
-    );
-
-
-const camera =
-    new THREE.PerspectiveCamera(
-        75,
-        innerWidth /
-        innerHeight,
-        .1,
-        220
-    );
-
-
-const renderer =
-    new THREE.WebGLRenderer({
-
-        antialias:false,
-
-        powerPreference:
-            "high-performance"
-
-    });
-
-
-renderer.setSize(
-    innerWidth,
-    innerHeight
-);
-
-
-renderer.setPixelRatio(
-    Math.min(
-        devicePixelRatio,
-        1.5
-    )
-);
-
-
-renderer.outputColorSpace =
-    THREE.SRGBColorSpace;
-
-
-renderer.shadowMap.enabled =
-    true;
-
-
-document.body.appendChild(
-    renderer.domElement
-);
-
-
-/* ============================================================
-   LIGHT
-============================================================ */
-
-const skyLight =
-    new THREE.HemisphereLight(
-        0xccecff,
-        0x46583d,
-        1.5
-    );
-
-
-scene.add(
-    skyLight
-);
-
-
-const sun =
-    new THREE.DirectionalLight(
-        0xffffff,
-        2.2
-    );
-
-
-sun.position.set(
-    30,
-    50,
-    20
-);
-
-
-sun.castShadow =
-    true;
-
-
-sun.shadow.mapSize.set(
-    1024,
-    1024
-);
-
-
-scene.add(
-    sun
-);
-
-
-/* ============================================================
-   TEXTURES
-============================================================ */
-
-function makeTexture(
-    base,
-    a,
-    b
-){
-
-    const canvas =
-        document.createElement(
-            "canvas"
-        );
-
-
-    canvas.width =
-        32;
-
-
-    canvas.height =
-        32;
-
-
-    const ctx =
-        canvas.getContext(
-            "2d"
-        );
-
-
-    ctx.fillStyle =
-        base;
-
-
-    ctx.fillRect(
-        0,
-        0,
-        32,
-        32
-    );
-
-
-    for(
-        let i = 0;
-        i < 80;
-        i++
-    ){
-
-        ctx.fillStyle =
-            i % 2
-                ? a
-                : b;
-
-
-        const size =
-            1 +
-            Math.random() *
-            2;
-
-
-        ctx.fillRect(
-            Math.random() * 32,
-            Math.random() * 32,
-            size,
-            size
-        );
-
-    }
-
-
-    const texture =
-        new THREE.CanvasTexture(
-            canvas
-        );
-
-
-    texture.magFilter =
-        THREE.NearestFilter;
-
-
-    texture.minFilter =
-        THREE.NearestMipMapNearestFilter;
-
-
-    texture.colorSpace =
-        THREE.SRGBColorSpace;
-
-
-    return texture;
-
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js";
+
+/* ---------------- SCENE ---------------- */
+const scene = new THREE.Scene();
+const daySky = new THREE.Color(0x8ed1f3);
+const nightSky = new THREE.Color(0x07111e);
+const currentSky = new THREE.Color();
+scene.background = daySky;
+scene.fog = new THREE.Fog(0x8ed1f3,35,110);
+
+const camera = new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,220);
+const renderer = new THREE.WebGLRenderer({antialias:false,powerPreference:"high-performance"});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+const skyLight = new THREE.HemisphereLight(0xccecff,0x46583d,1.5);
+scene.add(skyLight);
+
+const sun = new THREE.DirectionalLight(0xffffff,2.2);
+sun.position.set(30,50,20);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024,1024);
+scene.add(sun);
+
+/* ---------------- UI ---------------- */
+const $ = id => document.getElementById(id);
+const statusEl = $("status");
+const modeEl = $("mode");
+const playerCountEl = $("playerCount");
+const dayEl = $("day");
+const hotbarEl = $("hotbar");
+const toastEl = $("toast");
+
+function setStatus(text){ statusEl.textContent = text; }
+function setMode(text){ modeEl.textContent = text; }
+function toast(text){
+  toastEl.textContent = text;
+  toastEl.style.opacity = "1";
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(()=>toastEl.style.opacity="0",1400);
 }
 
-
-const textures = {
-
-    grassTop:
-        makeTexture(
-            "#5aa440",
-            "#74bb51",
-            "#3f7d2f"
-        ),
-
-    grassSide:
-        makeTexture(
-            "#71502f",
-            "#568137",
-            "#8b6038"
-        ),
-
-    dirt:
-        makeTexture(
-            "#76502e",
-            "#976740",
-            "#5a381e"
-        ),
-
-    stone:
-        makeTexture(
-            "#74787c",
-            "#92969a",
-            "#5e6266"
-        ),
-
-    wood:
-        makeTexture(
-            "#7d512b",
-            "#a36b38",
-            "#5d3b20"
-        ),
-
-    woodTop:
-        makeTexture(
-            "#b47b46",
-            "#d09a59",
-            "#885830"
-        ),
-
-    leaves:
-        makeTexture(
-            "#2e863d",
-            "#4da753",
-            "#236b30"
-        ),
-
-    sand:
-        makeTexture(
-            "#d7bd77",
-            "#ead58f",
-            "#b9a05a"
-        ),
-
-    snow:
-        makeTexture(
-            "#eef7f8",
-            "#ffffff",
-            "#cfdfe3"
-        )
-
-};
-
-
-/* ============================================================
-   MATERIALS
-============================================================ */
+/* ---------------- WORLD ---------------- */
+const WORLD_RADIUS = 25;
+const world = new Map();
+const worldMeshes = new Map();
+const cubeGeometry = new THREE.BoxGeometry(1,1,1);
 
 const materials = {
-
-    grassSide:
-        new THREE.MeshLambertMaterial({
-            map:textures.grassSide
-        }),
-
-    grassTop:
-        new THREE.MeshLambertMaterial({
-            map:textures.grassTop
-        }),
-
-    dirt:
-        new THREE.MeshLambertMaterial({
-            map:textures.dirt
-        }),
-
-    stone:
-        new THREE.MeshLambertMaterial({
-            map:textures.stone
-        }),
-
-    wood:
-        new THREE.MeshLambertMaterial({
-            map:textures.wood
-        }),
-
-    woodTop:
-        new THREE.MeshLambertMaterial({
-            map:textures.woodTop
-        }),
-
-    leaves:
-        new THREE.MeshLambertMaterial({
-            map:textures.leaves,
-            transparent:true,
-            opacity:.94
-        }),
-
-    sand:
-        new THREE.MeshLambertMaterial({
-            map:textures.sand
-        }),
-
-    snow:
-        new THREE.MeshLambertMaterial({
-            map:textures.snow
-        }),
-
-    bedrock:
-        new THREE.MeshLambertMaterial({
-            color:0x30343a
-        }),
-
-    water:
-        new THREE.MeshLambertMaterial({
-            color:0x4da8d8,
-            transparent:true,
-            opacity:.56
-        })
-
+  grass: new THREE.MeshLambertMaterial({color:0x5aa440}),
+  dirt: new THREE.MeshLambertMaterial({color:0x76502e}),
+  stone: new THREE.MeshLambertMaterial({color:0x74787c}),
+  wood: new THREE.MeshLambertMaterial({color:0x7d512b}),
+  leaves: new THREE.MeshLambertMaterial({color:0x2e863d,transparent:true,opacity:.94}),
+  sand: new THREE.MeshLambertMaterial({color:0xd7bd77}),
+  snow: new THREE.MeshLambertMaterial({color:0xeef7f8}),
+  bedrock: new THREE.MeshLambertMaterial({color:0x30343a})
 };
 
-
-const blockMaterials = {
-
-    grass:[
-        materials.grassSide,
-        materials.grassSide,
-        materials.grassTop,
-        materials.grassSide,
-        materials.grassSide,
-        materials.grassSide
-    ],
-
-    dirt:
-        materials.dirt,
-
-    stone:
-        materials.stone,
-
-    wood:[
-        materials.wood,
-        materials.wood,
-        materials.woodTop,
-        materials.wood,
-        materials.wood,
-        materials.wood
-    ],
-
-    leaves:
-        materials.leaves,
-
-    sand:
-        materials.sand,
-
-    snow:
-        materials.snow
-
-};
-
-
-/* ============================================================
-   WORLD
-============================================================ */
-
-const world =
-    new Map();
-
-
-const cubeGeometry =
-    new THREE.BoxGeometry(
-        1,
-        1,
-        1
-    );
-
-
-const worldMeshes =
-    new Map();
-
-
-function blockKey(
-    x,
-    y,
-    z
-){
-
-    return (
-        x +
-        "|" +
-        y +
-        "|" +
-        z
-    );
-
-}
-
-
-function getBlock(
-    x,
-    y,
-    z
-){
-
-    return world.get(
-        blockKey(
-            x,
-            y,
-            z
-        )
-    );
-
-}
-
-
-function setBlock(
-    x,
-    y,
-    z,
-    type,
-    fixed = false
-){
-
-    world.set(
-        blockKey(
-            x,
-            y,
-            z
-        ),
-        {
-            x,
-            y,
-            z,
-            type,
-            fixed
-        }
-    );
-
-}
-
-
-function removeBlock(
-    x,
-    y,
-    z
-){
-
-    const block =
-        getBlock(
-            x,
-            y,
-            z
-        );
-
-
-    if(
-        !block ||
-        block.fixed
-    ){
-
-        return null;
-
-    }
-
-
-    world.delete(
-        blockKey(
-            x,
-            y,
-            z
-        )
-    );
-
-
-    return block.type;
-
-}
-
-
-/* ============================================================
-   TERRAIN
-============================================================ */
-
-function terrainHeight(
-    x,
-    z
-){
-
-    const value =
-        Math.sin(
-            x * .19
-        ) +
-
-        Math.cos(
-            z * .22
-        ) * .8 +
-
-        Math.sin(
-            (x + z) *
-            .11
-        ) * 1.15 +
-
-        Math.cos(
-            (x - z) *
-            .15
-        ) * .45;
-
-
-    if(
-        value > 2.15
-    ){
-
-        return 9;
-
-    }
-
-
-    if(
-        value > 1.25
-    ){
-
-        return 7;
-
-    }
-
-
-    if(
-        value > .05
-    ){
-
-        return 5;
-
-    }
-
-
-    if(
-        value > -.9
-    ){
-
-        return 3;
-
-    }
-
-
-    return 2;
-
-}
-
-
-const WORLD_RADIUS =
-    25;
-
-
-function createTree(
-    x,
-    z
-){
-
-    const ground =
-        terrainHeight(
-            x,
-            z
-        );
-
-
-    if(
-        ground < 3
-    ){
-
-        return;
-
-    }
-
-
-    for(
-        let y = 1;
-        y <= 3;
-        y++
-    ){
-
-        setBlock(
-            x,
-            ground + y,
-            z,
-            "wood"
-        );
-
-    }
-
-
-    for(
-        let dx = -2;
-        dx <= 2;
-        dx++
-    ){
-
-        for(
-            let dz = -2;
-            dz <= 2;
-            dz++
-        ){
-
-            for(
-                let dy = 2;
-                dy <= 4;
-                dy++
-            ){
-
-                const distance =
-                    Math.abs(dx) +
-                    Math.abs(dz) +
-                    (
-                        dy === 4
-                            ? 1
-                            : 0
-                    );
-
-
-                if(
-                    distance <= 3
-                ){
-
-                    if(
-                        !getBlock(
-                            x + dx,
-                            ground + dy,
-                            z + dz
-                        )
-                    ){
-
-                        setBlock(
-                            x + dx,
-                            ground + dy,
-                            z + dz,
-                            "leaves"
-                        );
-
-                    }
-
-                }
-
-            }
-
-        }
-
-    }
-
-}
-
-
-function generateWorld(){
-
-    world.clear();
-
-
-    for(
-        let x = -WORLD_RADIUS;
-        x <= WORLD_RADIUS;
-        x++
-    ){
-
-        for(
-            let z = -WORLD_RADIUS;
-            z <= WORLD_RADIUS;
-            z++
-        ){
-
-            const height =
-                terrainHeight(
-                    x,
-                    z
-                );
-
-
-            for(
-                let y = 0;
-                y <= height;
-                y++
-            ){
-
-                let type =
-                    "dirt";
-
-
-                if(
-                    y === 0
-                ){
-
-                    type =
-                        "bedrock";
-
-                }
-                else if(
-                    y === height
-                ){
-
-                    type =
-                        height === 2
-                            ? "sand"
-                            : "grass";
-
-                }
-                else if(
-                    y < height - 2
-                ){
-
-                    type =
-                        "stone";
-
-                }
-
-
-                setBlock(
-                    x,
-                    y,
-                    z,
-                    type,
-                    y === 0
-                );
-
-            }
-
-        }
-
-    }
-
-
-    let seed =
-        12345;
-
-
-    function random(){
-
-        seed =
-            (
-                seed *
-                1664525 +
-                1013904223
-            ) >>> 0;
-
-
-        return (
-            seed /
-            4294967296
-        );
-
-    }
-
-
-    for(
-        let x = -21;
-        x <= 21;
-        x += 5
-    ){
-
-        for(
-            let z = -21;
-            z <= 21;
-            z += 6
-        ){
-
-            if(
-                random() < .5
-            ){
-
-                createTree(
-                    x +
-                    Math.floor(
-                        random() * 2
-                    ),
-
-                    z +
-                    Math.floor(
-                        random() * 2
-                    )
-                );
-
-            }
-
-        }
-
-    }
-
-}
-
-
-generateWorld();
-
-
-/* ============================================================
-   EFFICIENT BLOCK RENDERING
-============================================================ */
-
-function blockIsExposed(
-    block
-){
-
-    return (
-
-        !getBlock(
-            block.x + 1,
-            block.y,
-            block.z
-        ) ||
-
-        !getBlock(
-            block.x - 1,
-            block.y,
-            block.z
-        ) ||
-
-        !getBlock(
-            block.x,
-            block.y + 1,
-            block.z
-        ) ||
-
-        !getBlock(
-            block.x,
-            block.y - 1,
-            block.z
-        ) ||
-
-        !getBlock(
-            block.x,
-            block.y,
-            block.z + 1
-        ) ||
-
-        !getBlock(
-            block.x,
-            block.y,
-            block.z - 1
-        )
-
-    );
-
-}
-
-
-function rebuildWorld(){
-
-    for(
-        const mesh
-        of worldMeshes.values()
-    ){
-
-        scene.remove(
-            mesh
-        );
-
-    }
-
-
-    worldMeshes.clear();
-
-
-    const groups =
-        new Map();
-
-
-    for(
-        const block
-        of world.values()
-    ){
-
-        if(
-            block.type ===
-            "bedrock"
-        ){
-
-            continue;
-
-        }
-
-
-        if(
-            !blockIsExposed(
-                block
-            )
-        ){
-
-            continue;
-
-        }
-
-
-        if(
-            !groups.has(
-                block.type
-            )
-        ){
-
-            groups.set(
-                block.type,
-                []
-            );
-
-        }
-
-
-        groups
-            .get(
-                block.type
-            )
-            .push(
-                block
-            );
-
-    }
-
-
-    const matrix =
-        new THREE.Matrix4();
-
-
-    for(
-        const [
-            type,
-            blockList
-        ]
-        of groups
-    ){
-
-        const mesh =
-            new THREE.InstancedMesh(
-                cubeGeometry,
-                blockMaterials[type],
-                blockList.length
-            );
-
-
-        mesh.userData.blocks =
-            blockList;
-
-
-        mesh.castShadow =
-            type !==
-            "leaves";
-
-
-        mesh.receiveShadow =
-            true;
-
-
-        for(
-            let i = 0;
-            i < blockList.length;
-            i++
-        ){
-
-            const block =
-                blockList[i];
-
-
-            matrix.makeTranslation(
-                block.x + .5,
-                block.y + .5,
-                block.z + .5
-            );
-
-
-            mesh.setMatrixAt(
-                i,
-                matrix
-            );
-
-        }
-
-
-        mesh.instanceMatrix.needsUpdate =
-            true;
-
-
-        worldMeshes.set(
-            type,
-            mesh
-        );
-
-
-        scene.add(
-            mesh
-        );
-
-    }
-
-}
-
-
-rebuildWorld();
-
-
-/* ============================================================
-   WATER
-============================================================ */
-
-const water =
-    new THREE.Mesh(
-        new THREE.PlaneGeometry(
-            110,
-            110
-        ),
-        materials.water
-    );
-
-
-water.rotation.x =
-    -Math.PI / 2;
-
-
-water.position.y =
-    2.72;
-
-
-scene.add(
-    water
-);
-
-
-/* ============================================================
-   PLAYER
-============================================================ */
-
-const player =
-    new THREE.Object3D();
-
-
-scene.add(
-    player
-);
-
-
-const PLAYER_HEIGHT =
-    1.8;
-
-
-const PLAYER_RADIUS =
-    .28;
-
-
-const EYE_HEIGHT =
-    1.62;
-
-
-/*
-    player.position.y =
-    feet position.
-*/
-
-player.position.set(
-    0,
-    terrainHeight(
-        0,
-        8
-    ) + 1.01,
-    8
-);
-
-
-player.add(
-    camera
-);
-
-
-camera.position.set(
-    0,
-    EYE_HEIGHT,
-    0
-);
-
-
-let yaw = 0;
-
-let pitch = 0;
-
-let velocityY = 0;
-
-let grounded = false;
-
-let jumpPressed = false;
-
-let gameStarted = false;
-
-
-/* ============================================================
-   KEYBOARD
-============================================================ */
-
-const keys = {};
-
-
-addEventListener(
-    "keydown",
-    event => {
-
-        keys[
-            event.code
-        ] =
-            true;
-
-
-        if(
-            event.code ===
-            "Space"
-        ){
-
-            jumpPressed =
-                true;
-
-        }
-
-
-        if(
-            event.code.startsWith(
-                "Digit"
-            )
-        ){
-
-            const number =
-                Number(
-                    event.code.slice(
-                        5
-                    )
-                ) - 1;
-
-
-            if(
-                number >= 0 &&
-                number <
-                    inventory.length
-            ){
-
-                selectedBlock =
-                    number;
-
-
-                renderHotbar();
-
-            }
-
-        }
-
-    }
-);
-
-
-addEventListener(
-    "keyup",
-    event => {
-
-        keys[
-            event.code
-        ] =
-            false;
-
-
-        if(
-            event.code ===
-            "Space"
-        ){
-
-            jumpPressed =
-                false;
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   MOUSE CAMERA
-============================================================ */
-
-renderer.domElement.addEventListener(
-    "click",
-    () => {
-
-        if(
-            !gameStarted
-        ){
-
-            return;
-
-        }
-
-
-        if(
-            document.pointerLockElement !==
-            renderer.domElement
-        ){
-
-            try{
-
-                renderer.domElement
-                    .requestPointerLock();
-
-            }
-            catch{}
-
-        }
-
-    }
-);
-
-
-addEventListener(
-    "mousemove",
-    event => {
-
-        if(
-            !gameStarted
-        ){
-
-            return;
-
-        }
-
-
-        if(
-            document.pointerLockElement !==
-            renderer.domElement
-        ){
-
-            return;
-
-        }
-
-
-        yaw -=
-            event.movementX *
-            .0022;
-
-
-        pitch -=
-            event.movementY *
-            .0022;
-
-
-        pitch =
-            Math.max(
-                -1.5,
-                Math.min(
-                    1.5,
-                    pitch
-                )
-            );
-
-
-        player.rotation.y =
-            yaw;
-
-
-        camera.rotation.x =
-            pitch;
-
-    }
-);
-
-
-/* ============================================================
-   INVENTORY
-============================================================ */
-
-const inventory = [
-
-    {
-        name:"grass",
-        color:"#5aa440",
-        count:25
-    },
-
-    {
-        name:"dirt",
-        color:"#76502e",
-        count:35
-    },
-
-    {
-        name:"stone",
-        color:"#74787c",
-        count:45
-    },
-
-    {
-        name:"wood",
-        color:"#7b4e28",
-        count:20
-    },
-
-    {
-        name:"leaves",
-        color:"#2e863d",
-        count:20
-    },
-
-    {
-        name:"sand",
-        color:"#d7bd77",
-        count:20
-    },
-
-    {
-        name:"snow",
-        color:"#eef7f8",
-        count:12
-    }
-
+const blockTypes = [
+  {name:"grass", color:"#5aa440"},
+  {name:"dirt", color:"#76502e"},
+  {name:"stone", color:"#74787c"},
+  {name:"wood", color:"#7d512b"},
+  {name:"leaves", color:"#2e863d"},
+  {name:"sand", color:"#d7bd77"},
+  {name:"snow", color:"#eef7f8"}
 ];
 
+function key(x,y,z){ return `${x}|${y}|${z}`; }
+function getBlock(x,y,z){ return world.get(key(x,y,z)); }
+function setBlock(x,y,z,type,fixed=false){ world.set(key(x,y,z),{x,y,z,type,fixed}); }
+function removeBlock(x,y,z){
+  const b = getBlock(x,y,z);
+  if(!b || b.fixed) return null;
+  world.delete(key(x,y,z));
+  return b.type;
+}
 
-let selectedBlock =
-    0;
+function terrainHeight(x,z){
+  const v = Math.sin(x*.19)+Math.cos(z*.22)*.8+Math.sin((x+z)*.11)*1.15+Math.cos((x-z)*.15)*.45;
+  if(v>2.15) return 9;
+  if(v>1.25) return 7;
+  if(v>.05) return 5;
+  if(v>-.9) return 3;
+  return 2;
+}
 
+function createTree(x,z){
+  const ground = terrainHeight(x,z);
+  if(ground<3) return;
+  for(let y=1;y<=3;y++) setBlock(x,ground+y,z,"wood");
+  for(let dx=-2;dx<=2;dx++){
+    for(let dz=-2;dz<=2;dz++){
+      for(let dy=2;dy<=4;dy++){
+        const d=Math.abs(dx)+Math.abs(dz)+(dy===4?1:0);
+        if(d<=3 && !getBlock(x+dx,ground+dy,z+dz)) setBlock(x+dx,ground+dy,z+dz,"leaves");
+      }
+    }
+  }
+}
 
-const hotbar =
-    document.getElementById(
-        "hotbar"
-    );
+function generateWorld(){
+  world.clear();
+  for(let x=-WORLD_RADIUS;x<=WORLD_RADIUS;x++){
+    for(let z=-WORLD_RADIUS;z<=WORLD_RADIUS;z++){
+      const height=terrainHeight(x,z);
+      for(let y=0;y<=height;y++){
+        let type="dirt";
+        if(y===0) type="bedrock";
+        else if(y===height) type=height===2?"sand":"grass";
+        else if(y<height-2) type="stone";
+        setBlock(x,y,z,type,y===0);
+      }
+    }
+  }
+  let seed=12345;
+  const rand=()=>((seed=(seed*1664525+1013904223)>>>0)/4294967296);
+  for(let x=-21;x<=21;x+=5){
+    for(let z=-21;z<=21;z+=6){
+      if(rand()<.5) createTree(x+Math.floor(rand()*2),z+Math.floor(rand()*2));
+    }
+  }
+}
 
+function exposed(b){
+  return !getBlock(b.x+1,b.y,b.z)||!getBlock(b.x-1,b.y,b.z)||
+         !getBlock(b.x,b.y+1,b.z)||!getBlock(b.x,b.y-1,b.z)||
+         !getBlock(b.x,b.y,b.z+1)||!getBlock(b.x,b.y,b.z-1);
+}
+
+function rebuildWorld(){
+  for(const mesh of worldMeshes.values()) scene.remove(mesh);
+  worldMeshes.clear();
+
+  const groups=new Map();
+  for(const b of world.values()){
+    if(b.type==="bedrock" || !exposed(b)) continue;
+    if(!groups.has(b.type)) groups.set(b.type,[]);
+    groups.get(b.type).push(b);
+  }
+
+  const matrix=new THREE.Matrix4();
+  for(const [type,list] of groups){
+    const mesh=new THREE.InstancedMesh(cubeGeometry,materials[type],list.length);
+    mesh.userData.blocks=list;
+    mesh.castShadow=type!=="leaves";
+    mesh.receiveShadow=true;
+    for(let i=0;i<list.length;i++){
+      const b=list[i];
+      matrix.makeTranslation(b.x+.5,b.y+.5,b.z+.5);
+      mesh.setMatrixAt(i,matrix);
+    }
+    mesh.instanceMatrix.needsUpdate=true;
+    worldMeshes.set(type,mesh);
+    scene.add(mesh);
+  }
+}
+
+generateWorld();
+rebuildWorld();
+
+const water = new THREE.Mesh(
+  new THREE.PlaneGeometry(110,110),
+  new THREE.MeshLambertMaterial({color:0x4da8d8,transparent:true,opacity:.56})
+);
+water.rotation.x=-Math.PI/2;
+water.position.y=2.72;
+scene.add(water);
+
+/* ---------------- PLAYER ---------------- */
+const player=new THREE.Object3D();
+scene.add(player);
+
+const PLAYER_HEIGHT=1.8;
+const PLAYER_RADIUS=.28;
+const EYE_HEIGHT=1.62;
+
+player.position.set(0,terrainHeight(0,8)+1.01,8);
+player.add(camera);
+camera.position.set(0,EYE_HEIGHT,0);
+
+let yaw=0;
+let pitch=0;
+let velocityY=0;
+let grounded=false;
+let jumpPressed=false;
+let gameStarted=false;
+
+const keys={};
+
+addEventListener("keydown",e=>{
+  keys[e.code]=true;
+
+  if(e.code==="KeyR"&&!e.repeat&&document.activeElement?.tagName!=="INPUT"){
+    undoLastEdit();
+  }
+
+  if(e.code==="Space") jumpPressed=true;
+
+  if(e.code.startsWith("Digit")){
+    const i=Number(e.code.slice(5))-1;
+    if(i>=0&&i<inventory.length){
+      selectedBlock=i;
+      renderHotbar();
+    }
+  }
+});
+
+addEventListener("keyup",e=>{
+  keys[e.code]=false;
+  if(e.code==="Space") jumpPressed=false;
+});
+
+/* ---------------- CAMERA ---------------- */
+renderer.domElement.style.touchAction="none";
+
+renderer.domElement.addEventListener("click",()=>{
+  if(!gameStarted) return;
+  if(document.pointerLockElement!==renderer.domElement){
+    try{renderer.domElement.requestPointerLock()}catch{}
+  }
+});
+
+addEventListener("mousemove",e=>{
+  if(!gameStarted||document.pointerLockElement!==renderer.domElement) return;
+  yaw-=e.movementX*.0022;
+  pitch-=e.movementY*.0022;
+  pitch=Math.max(-1.5,Math.min(1.5,pitch));
+  player.rotation.y=yaw;
+  camera.rotation.x=pitch;
+});
+
+let touchLookId=null,touchLookX=0,touchLookY=0;
+renderer.domElement.addEventListener("pointerdown",e=>{
+  if(!gameStarted||e.pointerType!=="touch") return;
+  touchLookId=e.pointerId;
+  touchLookX=e.clientX;
+  touchLookY=e.clientY;
+  try{renderer.domElement.setPointerCapture(e.pointerId)}catch{}
+});
+renderer.domElement.addEventListener("pointermove",e=>{
+  if(!gameStarted||e.pointerId!==touchLookId) return;
+  const dx=e.clientX-touchLookX;
+  const dy=e.clientY-touchLookY;
+  touchLookX=e.clientX;
+  touchLookY=e.clientY;
+  yaw-=dx*.006;
+  pitch-=dy*.006;
+  pitch=Math.max(-1.5,Math.min(1.5,pitch));
+  player.rotation.y=yaw;
+  camera.rotation.x=pitch;
+});
+function clearTouchLook(e){if(e.pointerId===touchLookId)touchLookId=null}
+renderer.domElement.addEventListener("pointerup",clearTouchLook);
+renderer.domElement.addEventListener("pointercancel",clearTouchLook);
+
+/* ---------------- INVENTORY + UNDO ---------------- */
+const inventory=blockTypes.map((b,i)=>({...b,count:[25,35,45,20,20,20,12][i]}));
+let selectedBlock=0;
+const editHistory=[];
+const MAX_EDIT_HISTORY=40;
+
+function recordEdit(edit){
+  editHistory.push(edit);
+  if(editHistory.length>MAX_EDIT_HISTORY) editHistory.shift();
+}
+
+function adjustInventory(type,delta){
+  const item=inventory.find(i=>i.name===type);
+  if(item) item.count=Math.max(0,item.count+delta);
+}
+
+function undoLastEdit(){
+  if(!gameStarted)return;
+  const edit=editHistory.pop();
+  if(!edit){toast("Nothing to undo.");return;}
+
+  const current=getBlock(edit.x,edit.y,edit.z);
+  const currentType=current?current.type:null;
+  if(currentType!==edit.afterType){
+    toast("Can't undo: that block changed.");
+    return;
+  }
+
+  if(edit.action==="remove"){
+    const item=inventory.find(i=>i.name===edit.type);
+    if(!item||item.count<=0){
+      toast("Can't undo: block unavailable.");
+      return;
+    }
+    setBlock(edit.x,edit.y,edit.z,edit.type);
+    item.count--;
+    sendBlockChange({
+      kind:"block",
+      action:"add",
+      x:edit.x,y:edit.y,z:edit.z,
+      blockType:edit.type
+    });
+  }else if(edit.action==="add"){
+    if(!removeBlock(edit.x,edit.y,edit.z)){
+      toast("Can't undo that placement.");
+      return;
+    }
+    adjustInventory(edit.type,1);
+    sendBlockChange({
+      kind:"block",
+      action:"remove",
+      x:edit.x,y:edit.y,z:edit.z
+    });
+  }
+
+  rebuildWorld();
+  renderHotbar();
+  toast("Undid last block change.");
+}
 
 function renderHotbar(){
-
-    hotbar.innerHTML =
-        "";
-
-
-    inventory.forEach(
-        (
-            item,
-            index
-        ) => {
-
-            const slot =
-                document.createElement(
-                    "div"
-                );
-
-
-            slot.className =
-                "slot" +
-                (
-                    index ===
-                    selectedBlock
-                        ? " selected"
-                        : ""
-                );
-
-
-            slot.innerHTML = `
-
-                <span class="slotNumber">
-                    ${index + 1}
-                </span>
-
-                <span
-                    class="swatch"
-                    style="
-                        background:${item.color}
-                    "
-                ></span>
-
-                <span class="slotCount">
-                    ${item.count}
-                </span>
-
-            `;
-
-
-            slot.onclick =
-                () => {
-
-                    selectedBlock =
-                        index;
-
-
-                    renderHotbar();
-
-                };
-
-
-            hotbar.appendChild(
-                slot
-            );
-
-        }
-    );
-
+  hotbarEl.innerHTML="";
+  inventory.forEach((item,i)=>{
+    const slot=document.createElement("div");
+    slot.className="slot"+(i===selectedBlock?" selected":"");
+    slot.innerHTML=`<span class="slotNumber">${i+1}</span><span class="swatch" style="background:${item.color}"></span><span class="slotCount">${item.count}</span>`;
+    slot.onclick=()=>{selectedBlock=i;renderHotbar()};
+    hotbarEl.appendChild(slot);
+  });
 }
-
-
 renderHotbar();
 
+addEventListener("wheel",e=>{
+  if(!gameStarted||!inventory.length)return;
+  if(document.pointerLockElement!==renderer.domElement)return;
+  e.preventDefault();
+  selectedBlock=(selectedBlock+(e.deltaY>0?1:-1)+inventory.length)%inventory.length;
+  renderHotbar();
+},{passive:false});
 
-/* ============================================================
-   COLLISION
-============================================================ */
+/* ---------------- MOVEMENT ---------------- */
+function collidesAt(px,feetY,pz){
+  const minX=Math.floor(px-PLAYER_RADIUS),maxX=Math.floor(px+PLAYER_RADIUS);
+  const minZ=Math.floor(pz-PLAYER_RADIUS),maxZ=Math.floor(pz+PLAYER_RADIUS);
+  const minY=Math.floor(feetY+.02),maxY=Math.floor(feetY+PLAYER_HEIGHT-.02);
 
-function collidesAt(
-    px,
-    feetY,
-    pz
-){
-
-    const minX =
-        Math.floor(
-            px -
-            PLAYER_RADIUS
-        );
-
-
-    const maxX =
-        Math.floor(
-            px +
-            PLAYER_RADIUS
-        );
-
-
-    const minZ =
-        Math.floor(
-            pz -
-            PLAYER_RADIUS
-        );
-
-
-    const maxZ =
-        Math.floor(
-            pz +
-            PLAYER_RADIUS
-        );
-
-
-    const minY =
-        Math.floor(
-            feetY +
-            0.02
-        );
-
-
-    const maxY =
-        Math.floor(
-            feetY +
-            PLAYER_HEIGHT -
-            0.02
-        );
-
-
-    for(
-        let x = minX;
-        x <= maxX;
-        x++
-    ){
-
-        for(
-            let z = minZ;
-            z <= maxZ;
-            z++
-        ){
-
-            for(
-                let y = minY;
-                y <= maxY;
-                y++
-            ){
-
-                if(
-                    getBlock(
-                        x,
-                        y,
-                        z
-                    )
-                ){
-
-                    return true;
-
-                }
-
-            }
-
-        }
-
+  for(let x=minX;x<=maxX;x++){
+    for(let z=minZ;z<=maxZ;z++){
+      for(let y=minY;y<=maxY;y++){
+        if(getBlock(x,y,z))return true;
+      }
     }
-
-
-    return false;
-
+  }
+  return false;
 }
 
-
-/*
-    Find the top surface underneath
-    the player.
-*/
-
-function findGroundY(
-    px,
-    pz,
-    currentFeetY
-){
-
-    const minX =
-        Math.floor(
-            px -
-            PLAYER_RADIUS
-        );
-
-
-    const maxX =
-        Math.floor(
-            px +
-            PLAYER_RADIUS
-        );
-
-
-    const minZ =
-        Math.floor(
-            pz -
-            PLAYER_RADIUS
-        );
-
-
-    const maxZ =
-        Math.floor(
-            pz +
-            PLAYER_RADIUS
-        );
-
-
-    let best =
-        -Infinity;
-
-
-    const startingY =
-        Math.floor(
-            currentFeetY
-        ) + 1;
-
-
-    for(
-        let x = minX;
-        x <= maxX;
-        x++
-    ){
-
-        for(
-            let z = minZ;
-            z <= maxZ;
-            z++
-        ){
-
-            for(
-                let y = startingY;
-                y >= 0;
-                y--
-            ){
-
-                const block =
-                    getBlock(
-                        x,
-                        y,
-                        z
-                    );
-
-
-                if(
-                    block
-                ){
-
-                    const top =
-                        y + 1;
-
-
-                    if(
-                        top <=
-                            currentFeetY +
-                            .18 &&
-                        top >
-                            best
-                    ){
-
-                        best =
-                            top;
-
-                    }
-
-
-                    break;
-
-                }
-
-            }
-
+function findGroundY(px,pz,currentFeetY){
+  const minX=Math.floor(px-PLAYER_RADIUS),maxX=Math.floor(px+PLAYER_RADIUS);
+  const minZ=Math.floor(pz-PLAYER_RADIUS),maxZ=Math.floor(pz+PLAYER_RADIUS);
+  let best=-Infinity;
+  for(let x=minX;x<=maxX;x++){
+    for(let z=minZ;z<=maxZ;z++){
+      for(let y=Math.floor(currentFeetY)+1;y>=0;y--){
+        const b=getBlock(x,y,z);
+        if(b){
+          const top=y+1;
+          if(top<=currentFeetY+.18&&top>best)best=top;
+          break;
         }
-
+      }
     }
-
-
-    return best;
-
+  }
+  return best;
 }
 
-
-/*
-    Find ceiling while jumping.
-*/
-
-function findCeilingY(
-    px,
-    pz,
-    feetY,
-    targetFeetY
-){
-
-    const minX =
-        Math.floor(
-            px -
-            PLAYER_RADIUS
-        );
-
-
-    const maxX =
-        Math.floor(
-            px +
-            PLAYER_RADIUS
-        );
-
-
-    const minZ =
-        Math.floor(
-            pz -
-            PLAYER_RADIUS
-        );
-
-
-    const maxZ =
-        Math.floor(
-            pz +
-            PLAYER_RADIUS
-        );
-
-
-    let ceiling =
-        Infinity;
-
-
-    const startingY =
-        Math.floor(
-            feetY +
-            PLAYER_HEIGHT
-        );
-
-
-    const endingY =
-        Math.floor(
-            targetFeetY +
-            PLAYER_HEIGHT
-        );
-
-
-    for(
-        let x = minX;
-        x <= maxX;
-        x++
-    ){
-
-        for(
-            let z = minZ;
-        z <= maxZ;
-        z++
-        ){
-
-            for(
-                let y = startingY;
-                y <= endingY + 1;
-                y++
-            ){
-
-                if(
-                    getBlock(
-                        x,
-                        y,
-                        z
-                    )
-                ){
-
-                    const possibleFeet =
-                        y -
-                        PLAYER_HEIGHT;
-
-
-                    if(
-                        possibleFeet >
-                        feetY
-                    ){
-
-                        ceiling =
-                            Math.min(
-                                ceiling,
-                                possibleFeet
-                            );
-
-                    }
-
-
-                    break;
-
-                }
-
-            }
-
+function findCeilingY(px,pz,feetY,targetFeetY){
+  const minX=Math.floor(px-PLAYER_RADIUS),maxX=Math.floor(px+PLAYER_RADIUS);
+  const minZ=Math.floor(pz-PLAYER_RADIUS),maxZ=Math.floor(pz+PLAYER_RADIUS);
+  let ceiling=Infinity;
+  const start=Math.floor(feetY+PLAYER_HEIGHT);
+  const end=Math.floor(targetFeetY+PLAYER_HEIGHT);
+  for(let x=minX;x<=maxX;x++){
+    for(let z=minZ;z<=maxZ;z++){
+      for(let y=start;y<=end+1;y++){
+        if(getBlock(x,y,z)){
+          const possibleFeet=y-PLAYER_HEIGHT;
+          if(possibleFeet>feetY)ceiling=Math.min(ceiling,possibleFeet);
+          break;
         }
-
+      }
     }
-
-
-    return ceiling;
-
+  }
+  return ceiling;
 }
 
+function updateMovement(dt){
+  let forward=0,strafe=0;
+  if(keys.KeyW||keys.ArrowUp)forward+=1;
+  if(keys.KeyS||keys.ArrowDown)forward-=1;
+  if(keys.KeyA||keys.ArrowLeft)strafe-=1;
+  if(keys.KeyD||keys.ArrowRight)strafe+=1;
 
-/* ============================================================
-   FIXED MOVEMENT
-============================================================ */
+  const len=Math.hypot(forward,strafe);
+  if(len>0){forward/=len;strafe/=len}
 
-function updateMovement(
-    dt
-){
+  const speed=(keys.ShiftLeft||keys.ShiftRight)?7:4.4;
+  const sx=Math.sin(yaw),cx=Math.cos(yaw);
+  const moveX=forward*(-sx)+strafe*cx;
+  const moveZ=forward*(-cx)+strafe*(-sx);
+  const dx=moveX*speed*dt;
+  const dz=moveZ*speed*dt;
 
-    /*
-        W = forward
-        S = backward
-        A = left
-        D = right
+  const newX=player.position.x+dx;
+  if(!collidesAt(newX,player.position.y,player.position.z))player.position.x=newX;
 
-        IMPORTANT:
-        The forward vector is derived
-        directly from yaw.
-    */
+  const newZ=player.position.z+dz;
+  if(!collidesAt(player.position.x,player.position.y,newZ))player.position.z=newZ;
 
-    let forward =
-        0;
+  if(jumpPressed&&grounded){
+    velocityY=7.2;
+    grounded=false;
+    jumpPressed=false;
+  }
 
+  velocityY-=18*dt;
+  const oldY=player.position.y;
+  const targetY=oldY+velocityY*dt;
 
-    let strafe =
-        0;
-
-
-    if(
-        keys.KeyW ||
-        keys.ArrowUp
-    ){
-
-        forward +=
-            1;
-
+  if(velocityY<=0){
+    const groundY=findGroundY(player.position.x,player.position.z,oldY);
+    if(groundY!==-Infinity&&targetY<=groundY&&oldY>=groundY-.3){
+      player.position.y=groundY;
+      velocityY=0;
+      grounded=true;
+    }else{
+      player.position.y=targetY;
+      grounded=false;
     }
-
-
-    if(
-        keys.KeyS ||
-        keys.ArrowDown
-    ){
-
-        forward -=
-            1;
-
+  }else{
+    const ceilingY=findCeilingY(player.position.x,player.position.z,oldY,targetY);
+    if(ceilingY!==Infinity&&targetY>=ceilingY){
+      player.position.y=ceilingY;
+      velocityY=0;
+    }else{
+      player.position.y=targetY;
     }
-
-
-    if(
-        keys.KeyA ||
-        keys.ArrowLeft
-    ){
-
-        strafe -=
-            1;
-
-    }
-
-
-    if(
-        keys.KeyD ||
-        keys.ArrowRight
-    ){
-
-        strafe +=
-            1;
-
-    }
-
-
-    /*
-        Normalize diagonal movement.
-    */
-
-    const length =
-        Math.hypot(
-            forward,
-            strafe
-        );
-
-
-    if(
-        length > 0
-    ){
-
-        forward /=
-            length;
-
-
-        strafe /=
-            length;
-
-    }
-
-
-    /*
-        Sprinting.
-    */
-
-    const sprinting =
-        keys.ShiftLeft ||
-        keys.ShiftRight;
-
-
-    const speed =
-        sprinting
-            ? 7.0
-            : 4.4;
-
-
-    /*
-        Camera forward.
-
-        In Three.js the camera looks
-        down negative Z.
-
-        These vectors make W point
-        exactly where the player is
-        looking horizontally.
-    */
-
-    const sinYaw =
-        Math.sin(
-            yaw
-        );
-
-
-    const cosYaw =
-        Math.cos(
-            yaw
-        );
-
-
-    const forwardX =
-        -sinYaw;
-
-
-    const forwardZ =
-        -cosYaw;
-
-
-    /*
-        Camera right.
-    */
-
-    const rightX =
-        cosYaw;
-
-
-    const rightZ =
-        -sinYaw;
-
-
-    /*
-        Final movement vector.
-    */
-
-    const moveX =
-        (
-            forward *
-            forwardX
-        ) +
-        (
-            strafe *
-            rightX
-        );
-
-
-    const moveZ =
-        (
-            forward *
-            forwardZ
-        ) +
-        (
-            strafe *
-            rightZ
-        );
-
-
-    const dx =
-        moveX *
-        speed *
-        dt;
-
-
-    const dz =
-        moveZ *
-        speed *
-        dt;
-
-
-    /*
-        X collision.
-    */
-
-    const newX =
-        player.position.x +
-        dx;
-
-
-    if(
-        !collidesAt(
-            newX,
-            player.position.y,
-            player.position.z
-        )
-    ){
-
-        player.position.x =
-            newX;
-
-    }
-
-
-    /*
-        Z collision.
-    */
-
-    const newZ =
-        player.position.z +
-        dz;
-
-
-    if(
-        !collidesAt(
-            player.position.x,
-            player.position.y,
-            newZ
-        )
-    ){
-
-        player.position.z =
-            newZ;
-
-    }
-
-
-    /*
-        Jump.
-    */
-
-    if(
-        jumpPressed &&
-        grounded
-    ){
-
-        velocityY =
-            7.2;
-
-
-        grounded =
-            false;
-
-
-        jumpPressed =
-            false;
-
-    }
-
-
-    /*
-        Gravity.
-    */
-
-    velocityY -=
-        18 *
-        dt;
-
-
-    const oldFeetY =
-        player.position.y;
-
-
-    const targetFeetY =
-        oldFeetY +
-        velocityY *
-        dt;
-
-
-    /*
-        Falling.
-    */
-
-    if(
-        velocityY <= 0
-    ){
-
-        const groundY =
-            findGroundY(
-                player.position.x,
-                player.position.z,
-                oldFeetY
-            );
-
-
-        if(
-            groundY !==
-                -Infinity &&
-            targetFeetY <=
-                groundY &&
-            oldFeetY >=
-                groundY - .3
-        ){
-
-            player.position.y =
-                groundY;
-
-
-            velocityY =
-                0;
-
-
-            grounded =
-                true;
-
-        }
-        else{
-
-            player.position.y =
-                targetFeetY;
-
-
-            grounded =
-                false;
-
-        }
-
-    }
-
-
-    /*
-        Jumping upward.
-    */
-
-    else{
-
-        const ceilingY =
-            findCeilingY(
-                player.position.x,
-                player.position.z,
-                oldFeetY,
-                targetFeetY
-            );
-
-
-        if(
-            ceilingY !==
-                Infinity &&
-            targetFeetY >=
-                ceilingY
-        ){
-
-            player.position.y =
-                ceilingY;
-
-
-            velocityY =
-                0;
-
-        }
-        else{
-
-            player.position.y =
-                targetFeetY;
-
-        }
-
-
-        grounded =
-            false;
-
-    }
-
-
-    /*
-        Respawn.
-    */
-
-    if(
-        player.position.y <
-        -15
-    ){
-
-        player.position.set(
-            0,
-            terrainHeight(
-                0,
-                8
-            ) + 1.01,
-            8
-        );
-
-
-        velocityY =
-            0;
-
-
-        grounded =
-            false;
-
-    }
-
+    grounded=false;
+  }
+
+  if(player.position.y<-15){
+    player.position.set(0,terrainHeight(0,8)+1.01,8);
+    velocityY=0;
+    grounded=false;
+    toast("Respawned safely.");
+  }
 }
 
+/* ---------------- BUILDING ---------------- */
+const raycaster=new THREE.Raycaster();
 
-/* ============================================================
-   BREAK / PLACE
-============================================================ */
-
-const raycaster =
-    new THREE.Raycaster();
-
-
-renderer.domElement.addEventListener(
-    "contextmenu",
-    event => {
-
-        event.preventDefault();
-
-    }
+const placementPreview=new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(1.02,1.02,1.02)),
+  new THREE.LineBasicMaterial({color:0x66ff66,transparent:true,opacity:.8})
 );
-
-
-renderer.domElement.addEventListener(
-    "mousedown",
-    event => {
-
-        if(
-            !gameStarted
-        ){
-
-            return;
-
-        }
-
-
-        raycaster.setFromCamera(
-            new THREE.Vector2(
-                0,
-                0
-            ),
-            camera
-        );
-
-
-        let closest =
-            null;
-
-
-        for(
-            const mesh
-            of worldMeshes.values()
-        ){
-
-            const hits =
-                raycaster.intersectObject(
-                    mesh,
-                    false
-                );
-
-
-            if(
-                hits.length &&
-                (
-                    closest === null ||
-                    hits[0].distance <
-                        closest.distance
-                )
-            ){
-
-                closest =
-                    hits[0];
-
-            }
-
-        }
-
-
-        if(
-            !closest ||
-            closest.distance >
-                7
-        ){
-
-            return;
-
-        }
-
-
-        const block =
-            closest.object
-                .userData
-                .blocks[
-                    closest.instanceId
-                ];
-
-
-        if(
-            !block
-        ){
-
-            return;
-
-        }
-
-
-        /*
-            LEFT CLICK:
-            break block.
-        */
-
-        if(
-            event.button ===
-            0
-        ){
-
-            const type =
-                removeBlock(
-                    block.x,
-                    block.y,
-                    block.z
-                );
-
-
-            if(
-                !type
-            ){
-
-                return;
-
-            }
-
-
-            const item =
-                inventory.find(
-                    entry =>
-                        entry.name ===
-                        type
-                );
-
-
-            if(
-                item
-            ){
-
-                item.count++;
-
-            }
-
-
-            rebuildWorld();
-
-
-            renderHotbar();
-
-
-            sendBlockChange({
-
-                type:
-                    "block",
-
-                action:
-                    "remove",
-
-                x:
-                    block.x,
-
-                y:
-                    block.y,
-
-                z:
-                    block.z
-
-            });
-
-        }
-
-
-        /*
-            RIGHT CLICK:
-            place block.
-        */
-
-        else if(
-            event.button ===
-            2
-        ){
-
-            const normal =
-                closest.face.normal;
-
-
-            const x =
-                block.x +
-                Math.round(
-                    normal.x
-                );
-
-
-            const y =
-                block.y +
-                Math.round(
-                    normal.y
-                );
-
-
-            const z =
-                block.z +
-                Math.round(
-                    normal.z
-                );
-
-
-            const item =
-                inventory[
-                    selectedBlock
-                ];
-
-
-            if(
-                !item ||
-                item.count <=
-                    0
-            ){
-
-                return;
-
-            }
-
-
-            if(
-                getBlock(
-                    x,
-                    y,
-                    z
-                )
-            ){
-
-                return;
-
-            }
-
-
-            /*
-                Prevent placing inside
-                the player.
-            */
-
-            if(
-                Math.abs(
-                    x +
-                    .5 -
-                    player.position.x
-                ) <
-                    .75 &&
-
-                Math.abs(
-                    z +
-                    .5 -
-                    player.position.z
-                ) <
-                    .75 &&
-
-                Math.abs(
-                    y +
-                    .5 -
-                    (
-                        player.position.y +
-                        .9
-                    )
-                ) <
-                    1.4
-            ){
-
-                return;
-
-            }
-
-
-            setBlock(
-                x,
-                y,
-                z,
-                item.name
-            );
-
-
-            item.count--;
-
-
-            rebuildWorld();
-
-
-            renderHotbar();
-
-
-            sendBlockChange({
-
-                type:
-                    "block",
-
-                action:
-                    "add",
-
-                x,
-
-                y,
-
-                z,
-
-                blockType:
-                    item.name
-
-            });
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   REMOTE PLAYERS
-============================================================ */
-
-const remotePlayers =
-    new Map();
-
-
-function createRemotePlayer(
-    id
-){
-
-    const group =
-        new THREE.Group();
-
-
-    let value =
-        0;
-
-
-    for(
-        const char
-        of id
-    ){
-
-        value +=
-            char.charCodeAt(
-                0
-            );
-
-    }
-
-
-    const color =
-        new THREE.Color()
-            .setHSL(
-                (
-                    value %
-                    360
-                ) / 360,
-                .65,
-                .5
-            );
-
-
-    const body =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .55,
-                .9,
-                .35
-            ),
-            new THREE.MeshLambertMaterial({
-                color
-            })
-        );
-
-
-    const head =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .46,
-                .46,
-                .46
-            ),
-            new THREE.MeshLambertMaterial({
-                color:
-                    0xf2c39e
-            })
-        );
-
-
-    body.position.y =
-        .45;
-
-
-    head.position.y =
-        1.02;
-
-
-    group.add(
-        body,
-        head
-    );
-
-
-    scene.add(
-        group
-    );
-
-
-    return group;
-
+placementPreview.visible=false;
+scene.add(placementPreview);
+
+function targetBlock(){
+  raycaster.setFromCamera(new THREE.Vector2(0,0),camera);
+  let closest=null;
+  for(const mesh of worldMeshes.values()){
+    const hits=raycaster.intersectObject(mesh,false);
+    if(hits.length&&(!closest||hits[0].distance<closest.distance))closest=hits[0];
+  }
+  if(!closest||closest.distance>7)return null;
+  const block=closest.object.userData.blocks[closest.instanceId];
+  return block?{hit:closest,block}:null;
 }
 
+function updatePlacementPreview(){
+  if(!gameStarted){placementPreview.visible=false;return;}
+  const item=inventory[selectedBlock];
+  if(!item||item.count<=0){placementPreview.visible=false;return;}
 
-function addRemotePlayer(
-    data
-){
+  const target=targetBlock();
+  if(!target){placementPreview.visible=false;return;}
 
-    if(
-        !data ||
-        !data.id ||
-        data.id ===
-        myPeerId
-    ){
+  const n=target.hit.face.normal;
+  const x=target.block.x+Math.round(n.x);
+  const y=target.block.y+Math.round(n.y);
+  const z=target.block.z+Math.round(n.z);
 
-        return;
+  if(getBlock(x,y,z)){
+    placementPreview.visible=false;
+    return;
+  }
 
-    }
+  if(Math.abs(x+.5-player.position.x)<.75&&
+     Math.abs(z+.5-player.position.z)<.75&&
+     Math.abs(y+.5-(player.position.y+.9))<1.4){
+    placementPreview.visible=false;
+    return;
+  }
 
-
-    let remote =
-        remotePlayers.get(
-            data.id
-        );
-
-
-    if(
-        !remote
-    ){
-
-        remote = {
-
-            object:
-                createRemotePlayer(
-                    data.id
-                ),
-
-            data:{
-                ...data
-            }
-
-        };
-
-
-        remotePlayers.set(
-            data.id,
-            remote
-        );
-
-    }
-    else{
-
-        remote.data =
-            {
-                ...remote.data,
-                ...data
-            };
-
-    }
-
-
-    updatePlayerCount();
-
+  placementPreview.position.set(x+.5,y+.5,z+.5);
+  placementPreview.visible=true;
 }
 
+renderer.domElement.addEventListener("contextmenu",e=>e.preventDefault());
+renderer.domElement.addEventListener("mousedown",e=>{
+  if(!gameStarted)return;
+  const target=targetBlock();
+  if(!target)return;
 
-function removeRemotePlayer(
-    id
-){
+  const b=target.block;
 
-    const remote =
-        remotePlayers.get(
-            id
-        );
+  if(e.button===0){
+    const type=removeBlock(b.x,b.y,b.z);
+    if(!type)return;
 
+    const item=inventory.find(i=>i.name===type);
+    if(item)item.count++;
 
-    if(
-        !remote
-    ){
+    recordEdit({
+      action:"remove",
+      x:b.x,y:b.y,z:b.z,
+      type,
+      afterType:null
+    });
 
-        return;
+    rebuildWorld();
+    renderHotbar();
 
+    sendBlockChange({
+      kind:"block",
+      action:"remove",
+      x:b.x,y:b.y,z:b.z
+    });
+    return;
+  }
+
+  if(e.button===2){
+    const n=target.hit.face.normal;
+    const x=b.x+Math.round(n.x);
+    const y=b.y+Math.round(n.y);
+    const z=b.z+Math.round(n.z);
+    const item=inventory[selectedBlock];
+
+    if(!item||item.count<=0)return;
+    if(getBlock(x,y,z))return;
+
+    if(Math.abs(x+.5-player.position.x)<.75&&
+       Math.abs(z+.5-player.position.z)<.75&&
+       Math.abs(y+.5-(player.position.y+.9))<1.4){
+      toast("Can't place a block inside yourself.");
+      return;
     }
 
+    setBlock(x,y,z,item.name);
+    item.count--;
 
-    scene.remove(
-        remote.object
-    );
+    recordEdit({
+      action:"add",
+      x,y,z,
+      type:item.name,
+      afterType:item.name
+    });
 
+    rebuildWorld();
+    renderHotbar();
 
-    remotePlayers.delete(
-        id
-    );
+    sendBlockChange({
+      kind:"block",
+      action:"add",
+      x,y,z,
+      blockType:item.name
+    });
+  }
+});
 
+/* ---------------- TOUCH CONTROLS ---------------- */
+document.querySelectorAll(".touchButton").forEach(button=>{
+  const keyCode=button.dataset.key;
 
-    updatePlayerCount();
+  const down=e=>{
+    e.preventDefault();
+    keys[keyCode]=true;
+    if(keyCode==="Space")jumpPressed=true;
+    try{button.setPointerCapture(e.pointerId)}catch{}
+  };
 
-}
+  const up=e=>{
+    e.preventDefault();
+    keys[keyCode]=false;
+    if(keyCode==="Space")jumpPressed=false;
+  };
 
+  button.addEventListener("pointerdown",down);
+  button.addEventListener("pointerup",up);
+  button.addEventListener("pointercancel",up);
+  button.addEventListener("pointerleave",e=>{
+    if(e.buttons===0)up(e);
+  });
+});
 
-function updateRemotePlayers(
-    dt
-){
-
-    for(
-        const remote
-        of remotePlayers.values()
-    ){
-
-        const data =
-            remote.data;
-
-
-        const target =
-            new THREE.Vector3(
-
-                Number(
-                    data.x ||
-                    0
-                ),
-
-                Number(
-                    data.y ||
-                    0
-                ),
-
-                Number(
-                    data.z ||
-                    0
-                )
-
-            );
-
-
-        remote.object
-            .position
-            .lerp(
-                target,
-                Math.min(
-                    1,
-                    dt * 14
-                )
-            );
-
-
-        remote.object
-            .rotation
-            .y =
-            Number(
-                data.yaw ||
-                0
-            );
-
-    }
-
-}
-
-
-function updatePlayerCount(){
-
-    document
-        .getElementById(
-            "playerCount"
-        )
-        .textContent =
-        String(
-            remotePlayers.size +
-            1
-        );
-
-}
-
-
-/* ============================================================
-   MULTIPLAYER
-============================================================ */
-
-let peer =
-    null;
-
-
-let myPeerId =
-    null;
-
-
-let isHost =
-    false;
-
-
-let hostConnection =
-    null;
-
-
-const connections =
-    new Map();
-
+/* ---------------- MULTIPLAYER ---------------- */
+let peer=null;
+let myPeerId=null;
+let isHost=false;
+let hostConnection=null;
+const connections=new Map();
+const remotePlayers=new Map();
 
 function playerData(){
-
-    return {
-
-        id:
-            myPeerId ||
-            "local",
-
-        name:
-            (
-                document
-                    .getElementById(
-                        "playerName"
-                    )
-                    .value ||
-                "Player"
-            )
-            .trim()
-            .slice(
-                0,
-                16
-            ),
-
-        x:
-            player.position.x,
-
-        y:
-            player.position.y,
-
-        z:
-            player.position.z,
-
-        yaw,
-
-        pitch
-
-    };
-
+  return {
+    id:myPeerId||"local",
+    name:($("playerName").value||"Player").trim().slice(0,16),
+    x:player.position.x,
+    y:player.position.y,
+    z:player.position.z,
+    yaw,
+    pitch
+  };
 }
-
 
 function worldSnapshot(){
-
-    return [
-        ...world.values()
-    ]
-    .filter(
-        block =>
-            block.type !==
-            "bedrock"
-    )
-    .map(
-        block => ({
-
-            x:
-                block.x,
-
-            y:
-                block.y,
-
-            z:
-                block.z,
-
-            type:
-                block.type
-
-        })
-    );
-
+  return [...world.values()]
+    .filter(b=>b.type!=="bedrock")
+    .map(b=>({x:b.x,y:b.y,z:b.z,type:b.type}));
 }
-
-
-function setStatus(
-    text
-){
-
-    document
-        .getElementById(
-            "status"
-        )
-        .textContent =
-        text;
-
-}
-
-
-function setMode(
-    text
-){
-
-    document
-        .getElementById(
-            "mode"
-        )
-        .textContent =
-        text;
-
-}
-
-
-function toast(
-    text
-){
-
-    const element =
-        document.getElementById(
-            "toast"
-        );
-
-
-    element.textContent =
-        text;
-
-
-    element.style.opacity =
-        "1";
-
-
-    clearTimeout(
-        toast.timer
-    );
-
-
-    toast.timer =
-        setTimeout(
-            () => {
-
-                element.style.opacity =
-                    "0";
-
-            },
-            1200
-        );
-
-}
-
 
 function connectPeer(){
+  return new Promise((resolve,reject)=>{
+    if(typeof window.Peer!=="function"){
+              reject(new Error("PeerJS did not load."));
+      return;
+    }
 
-    return new Promise(
-        (
-            resolve,
-            reject
-        ) => {
+    let done=false;
+    const p=new window.Peer(undefined,{
+      host:"0.peerjs.com",
+      port:443,
+      secure:true,
+      debug:0
+    });
 
-            if(
-                typeof window.Peer !==
-                "function"
-            ){
+    p.on("open",id=>{
+      if(done)return;
+      done=true;
+      myPeerId=id;
+      resolve(p);
+    });
 
-                reject(
-                    new Error(
-                        "PeerJS did not load."
-                    )
-                );
+    p.on("error",err=>{
+      if(!done){
+        done=true;
+        reject(err);
+      }else{
+        console.log("PeerJS:",err);
+      }
+    });
 
-                return;
-
-            }
-
-
-            let finished =
-                false;
-
-
-            const newPeer =
-                new window.Peer(
-                    undefined,
-                    {
-                        host:
-                            "0.peerjs.com",
-
-                        port:
-                            443,
-
-                        secure:
-                            true,
-
-                        debug:
-                            0
-                    }
-                );
-
-
-            newPeer.on(
-                "open",
-                id => {
-
-                    if(
-                        finished
-                    ){
-
-                        return;
-
-                    }
-
-
-                    finished =
-                        true;
-
-
-                    myPeerId =
-                        id;
-
-
-                    resolve(
-                        newPeer
-                    );
-
-                }
-            );
-
-
-            newPeer.on(
-                "error",
-                error => {
-
-                    console.log(
-                        "PeerJS:",
-                        error
-                    );
-
-
-                    if(
-                        !finished
-                    ){
-
-                        finished =
-                            true;
-
-
-                        reject(
-                            error
-                        );
-
-                    }
-
-                }
-            );
-
-
-            setTimeout(
-                () => {
-
-                    if(
-                        !finished
-                    ){
-
-                        finished =
-                            true;
-
-
-                        reject(
-                            new Error(
-                                "Multiplayer timed out."
-                            )
-                        );
-
-                    }
-
-                },
-                10000
-            );
-
-        }
-    );
-
+    setTimeout(()=>{
+      if(!done){
+        done=true;
+        reject(new Error("Multiplayer timed out."));
+      }
+    },10000);
+  });
 }
 
-
-/* ============================================================
-   START GAME
-============================================================ */
-
-function startGame(
-    statusMessage
-){
-
-    gameStarted =
-        true;
-
-
-    document
-        .getElementById(
-            "startScreen"
-        )
-        .style.display =
-        "none";
-
-
-    setStatus(
-        statusMessage
-    );
-
-
-    try{
-
-        renderer.domElement
-            .requestPointerLock();
-
-    }
-    catch{}
-
+function updatePlayerCount(){
+  playerCountEl.textContent=String(remotePlayers.size+1);
 }
 
-
-/* ============================================================
-   SOLO
-============================================================ */
-
-document
-    .getElementById(
-        "soloButton"
-    )
-    .onclick =
-    () => {
-
-        isHost =
-            false;
-
-
-        setMode(
-            "Solo"
-        );
-
-
-        startGame(
-            "SOLO MODE"
-        );
-
-
-        toast(
-            "WASD is ready!"
-        );
-
-    };
-
-
-/* ============================================================
-   CREATE ONLINE
-============================================================ */
-
-document
-    .getElementById(
-        "createButton"
-    )
-    .onclick =
-    async () => {
-
-        /*
-            Start immediately.
-            Multiplayer never blocks
-            movement.
-        */
-
-        startGame(
-            "Starting world..."
-        );
-
-
-        try{
-
-            peer =
-                await connectPeer();
-
-
-            isHost =
-                true;
-
-
-            setMode(
-                "Online Host"
-            );
-
-
-            setStatus(
-                "ONLINE · Room: " +
-                myPeerId
-            );
-
-
-            document
-                .getElementById(
-                    "roomBox"
-                )
-                .style.display =
-                "block";
-
-
-            document
-                .getElementById(
-                    "roomCode"
-                )
-                .textContent =
-                myPeerId;
-
-
-            peer.on(
-                "connection",
-                connection => {
-
-                    setupConnection(
-                        connection,
-                        true
-                    );
-
-                }
-            );
-
-
-            toast(
-                "Send the room code to your friend!"
-            );
-
-        }
-        catch(error){
-
-            isHost =
-                false;
-
-
-            setMode(
-                "Solo"
-            );
-
-
-            setStatus(
-                "SOLO MODE"
-            );
-
-
-            toast(
-                "Multiplayer unavailable. Solo still works."
-            );
-
-        }
-
-    };
-
-
-/* ============================================================
-   SHOW JOIN
-============================================================ */
-
-document
-    .getElementById(
-        "showJoinButton"
-    )
-    .onclick =
-    () => {
-
-        document
-            .getElementById(
-                "roomBox"
-            )
-            .style.display =
-            "block";
-
-    };
-
-
-document
-    .getElementById(
-        "hideJoinButton"
-    )
-    .onclick =
-    () => {
-
-        document
-            .getElementById(
-                "roomBox"
-            )
-            .style.display =
-            "none";
-
-    };
-
-
-/* ============================================================
-   JOIN WORLD
-============================================================ */
-
-document
-    .getElementById(
-        "joinButton"
-    )
-    .onclick =
-    async () => {
-
-        const roomCode =
-            document
-                .getElementById(
-                    "joinCode"
-                )
-                .value
-                .trim();
-
-
-        if(
-            !roomCode
-        ){
-
-            setStatus(
-                "Enter a room code."
-            );
-
-
-            return;
-
-        }
-
-
-        startGame(
-            "Starting game..."
-        );
-
-
-        try{
-
-            peer =
-                await connectPeer();
-
-
-            isHost =
-                false;
-
-
-            setMode(
-                "Joining"
-            );
-
-
-            const connection =
-                peer.connect(
-                    roomCode,
-                    {
-                        reliable:false,
-                        serialization:"json"
-                    }
-                );
-
-
-            hostConnection =
-                connection;
-
-
-            setupConnection(
-                connection,
-                false
-            );
-
-
-            setStatus(
-                "Connecting..."
-            );
-
-        }
-        catch(error){
-
-            setMode(
-                "Solo"
-            );
-
-
-            setStatus(
-                "SOLO MODE"
-            );
-
-
-            toast(
-                "Couldn't connect. You can still play solo."
-            );
-
-        }
-
-    };
-
-
-/* ============================================================
-   CONNECTION SETUP
-============================================================ */
-
-function setupConnection(
-    connection,
-    hostSide
-){
-
-    connection.on(
-        "open",
-        () => {
-
-            connections.set(
-                connection.peer,
-                connection
-            );
-
-
-            if(
-                hostSide
-            ){
-
-                connection.send({
-
-                    kind:
-                        "world",
-
-                    world:
-                        worldSnapshot(),
-
-                    host:
-                        playerData()
-
-                });
-
-
-                toast(
-                    "Friend joined!"
-                );
-
-            }
-            else{
-
-                connection.send({
-
-                    kind:
-                        "hello",
-
-                    player:
-                        playerData()
-
-                });
-
-            }
-
-
-            updatePlayerCount();
-
-        }
-    );
-
-
-    connection.on(
-        "data",
-        data => {
-
-            receiveNetworkMessage(
-                data,
-                connection
-            );
-
-        }
-    );
-
-
-    connection.on(
-        "close",
-        () => {
-
-            connections.delete(
-                connection.peer
-            );
-
-
-            removeRemotePlayer(
-                connection.peer
-            );
-
-        }
-    );
-
-
-    connection.on(
-        "error",
-        error => {
-
-            console.log(
-                "Connection error:",
-                error
-            );
-
-        }
-    );
-
+function createRemotePlayer(id){
+  const group=new THREE.Group();
+  let value=0;
+  for(const ch of id)value+=ch.charCodeAt(0);
+  const color=new THREE.Color().setHSL((value%360)/360,.65,.5);
+
+  const body=new THREE.Mesh(
+    new THREE.BoxGeometry(.55,.9,.35),
+    new THREE.MeshLambertMaterial({color})
+  );
+  const head=new THREE.Mesh(
+    new THREE.BoxGeometry(.46,.46,.46),
+    new THREE.MeshLambertMaterial({color:0xf2c39e})
+  );
+
+  body.position.y=.45;
+  head.position.y=1.02;
+  group.add(body,head);
+  scene.add(group);
+  return group;
 }
 
-
-/* ============================================================
-   NETWORK RECEIVE
-============================================================ */
-
-function receiveNetworkMessage(
-    data,
-    connection
-){
-
-    if(
-        !data ||
-        typeof data.kind !==
-        "string"
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        data.kind ===
-        "hello"
-    ){
-
-        if(
-            isHost &&
-            data.player
-        ){
-
-            addRemotePlayer(
-                data.player
-            );
-
-
-            connection.send({
-
-                kind:
-                    "world",
-
-                world:
-                    worldSnapshot(),
-
-                host:
-                    playerData()
-
-            });
-
-
-            broadcastExcept(
-                connection.peer,
-                {
-
-                    kind:
-                        "playerJoined",
-
-                    player:
-                        data.player
-
-                }
-            );
-
-        }
-
-
-        return;
-
-    }
-
-
-    if(
-        data.kind ===
-        "world"
-    ){
-
-        if(
-            Array.isArray(
-                data.world
-            )
-        ){
-
-            applyWorldSnapshot(
-                data.world
-            );
-
-        }
-
-
-        if(
-            data.host
-        ){
-
-            addRemotePlayer(
-                data.host
-            );
-
-        }
-
-
-        setMode(
-            "Online"
-        );
-
-
-        setStatus(
-            "ONLINE · Connected"
-        );
-
-
-        return;
-
-    }
-
-
-    if(
-        data.kind ===
-        "playerJoined"
-    ){
-
-        addRemotePlayer(
-            data.player
-        );
-
-
-        return;
-
-    }
-
-
-    if(
-        data.kind ===
-        "playerLeft"
-    ){
-
-        removeRemotePlayer(
-            data.id
-        );
-
-
-        return;
-
-    }
-
-
-    if(
-        data.kind ===
-        "state"
-    ){
-
-        addRemotePlayer(
-            data.player
-        );
-
-
-        return;
-
-    }
-
-
-    if(
-        data.kind ===
-        "block"
-    ){
-
-        applyNetworkBlock(
-            data
-        );
-
-
-        return;
-
-    }
-
+function addRemotePlayer(data){
+  if(!data||!data.id||data.id===myPeerId)return;
+
+  let remote=remotePlayers.get(data.id);
+  if(!remote){
+    remote={object:createRemotePlayer(data.id),data:{...data}};
+    remotePlayers.set(data.id,remote);
+  }else{
+    remote.data={...remote.data,...data};
+  }
+
+  updatePlayerCount();
 }
 
+function removeRemotePlayer(id){
+  const remote=remotePlayers.get(id);
+  if(!remote)return;
+  scene.remove(remote.object);
+  remotePlayers.delete(id);
+  updatePlayerCount();
+}
 
-/* ============================================================
-   WORLD SYNC
-============================================================ */
+function updateRemotePlayers(dt){
+  for(const remote of remotePlayers.values()){
+    const d=remote.data;
+    remote.object.position.lerp(
+      new THREE.Vector3(Number(d.x)||0,Number(d.y)||0,Number(d.z)||0),
+      Math.min(1,dt*14)
+    );
+    remote.object.rotation.y=Number(d.yaw)||0;
+  }
+}
 
-function applyWorldSnapshot(
-    snapshot
-){
-
-    if(
-        !Array.isArray(
-            snapshot
-        )
-    ){
-
-        return;
-
+function sendToConnections(message){
+  for(const c of connections.values()){
+    if(c.open){
+      try{c.send(message)}catch{}
     }
+  }
+}
 
+function sendBlockChange(message){
+  const payload={...message,sender:myPeerId};
+  if(isHost){
+    sendToConnections(payload);
+  }else if(hostConnection?.open){
+    try{hostConnection.send(payload)}catch{}
+  }
+}
 
-    world.clear();
+function applyWorldSnapshot(snapshot){
+  world.clear();
+  for(const b of snapshot||[])setBlock(b.x,b.y,b.z,b.type);
+  rebuildWorld();
+}
 
+function handleMessage(data,connection){
+  if(!data||typeof data.kind!=="string")return;
 
-    for(
-        const block
-        of snapshot
-    ){
-
-        if(
-            block &&
-            Number.isFinite(
-                Number(block.x)
-            ) &&
-            Number.isFinite(
-                Number(block.y)
-            ) &&
-            Number.isFinite(
-                Number(block.z)
-            )
-        ){
-
-            setBlock(
-                Number(block.x),
-                Number(block.y),
-                Number(block.z),
-                block.type
-            );
-
-        }
-
+  if(data.kind==="world"){
+    applyWorldSnapshot(data.world||[]);
+    if(data.host)addRemotePlayer(data.host);
+    if(Array.isArray(data.players)){
+      for(const p of data.players)addRemotePlayer(p);
     }
+    setStatus("ONLINE");
+    return;
+  }
 
-
-    for(
-        let x = -WORLD_RADIUS;
-        x <= WORLD_RADIUS;
-        x++
-    ){
-
-        for(
-            let z = -WORLD_RADIUS;
-            z <= WORLD_RADIUS;
-            z++
-        ){
-
-            setBlock(
-                x,
-                0,
-                z,
-                "bedrock",
-                true
-            );
-
-        }
-
+  if(data.kind==="playerJoined"){
+    addRemotePlayer(data.player);
+    if(isHost){
+      sendToConnections({
+        kind:"playerJoined",
+        player:playerData()
+      });
     }
+    return;
+  }
 
+  if(data.kind==="player"){
+    addRemotePlayer(data.player);
+    if(isHost){
+      sendToConnections(data);
+    }
+    return;
+  }
+
+  if(data.kind==="playerLeft"){
+    removeRemotePlayer(data.id);
+    return;
+  }
+
+  if(data.kind==="block"){
+    if(data.sender===myPeerId)return;
+
+    if(data.action==="add"&&data.blockType){
+      setBlock(data.x,data.y,data.z,data.blockType);
+    }else if(data.action==="remove"){
+      removeBlock(data.x,data.y,data.z);
+    }
 
     rebuildWorld();
 
+    if(isHost){
+      sendToConnections(data);
+    }
+  }
 }
 
+function setupConnection(connection,hostSide){
+  connection.on("open",()=>{
+    connections.set(connection.peer,connection);
 
-/* ============================================================
-   NETWORK BLOCKS
-============================================================ */
-
-function applyNetworkBlock(
-    data
-){
-
-    if(
-        data.action ===
-        "remove"
-    ){
-
-        removeBlock(
-            Number(
-                data.x
-            ),
-            Number(
-                data.y
-            ),
-            Number(
-                data.z
-            )
-        );
-
+    if(hostSide){
+      connection.send({
+        kind:"world",
+        world:worldSnapshot(),
+        host:playerData(),
+        players:[...remotePlayers.values()].map(r=>r.data)
+      });
+      sendToConnections({
+        kind:"playerJoined",
+        player:playerData()
+      });
     }
+  });
 
+  connection.on("data",data=>handleMessage(data,connection));
 
-    if(
-        data.action ===
-        "add"
-    ){
+  connection.on("close",()=>{
+    connections.delete(connection.peer);
+    removeRemotePlayer(connection.peer);
 
-        const allowed = [
-
-            "grass",
-            "dirt",
-            "stone",
-            "wood",
-            "leaves",
-            "sand",
-            "snow"
-
-        ];
-
-
-        if(
-            allowed.includes(
-                data.blockType
-            ) &&
-            !getBlock(
-                Number(data.x),
-                Number(data.y),
-                Number(data.z)
-            )
-        ){
-
-            setBlock(
-                Number(data.x),
-                Number(data.y),
-                Number(data.z),
-                data.blockType
-            );
-
-        }
-
+    if(isHost){
+      sendToConnections({
+        kind:"playerLeft",
+        id:connection.peer
+      });
+    }else if(hostConnection===connection){
+      hostConnection=null;
+      setMode("Solo");
+      setStatus("SOLO MODE · Host disconnected");
+      toast("The host left the world.");
     }
+  });
 
-
-    rebuildWorld();
-
-
-    if(
-        isHost
-    ){
-
-        broadcastExcept(
-            data.sender,
-            data
-        );
-
-    }
-
+  connection.on("error",err=>console.log("Connection:",err));
 }
 
+function broadcastPlayer(){
+  const message={kind:"player",player:playerData()};
 
-/* ============================================================
-   SEND BLOCK
-============================================================ */
-
-function sendBlockChange(
-    data
-){
-
-    if(
-        isHost
-    ){
-
-        data.sender =
-            myPeerId;
-
-
-        for(
-            const connection
-            of connections.values()
-        ){
-
-            if(
-                connection.open
-            ){
-
-                connection.send(
-                    data
-                );
-
-            }
-
-        }
-
-    }
-    else{
-
-        if(
-            hostConnection &&
-            hostConnection.open
-        ){
-
-            data.sender =
-                myPeerId;
-
-
-            hostConnection.send(
-                data
-            );
-
-        }
-
-    }
-
+  if(isHost){
+    sendToConnections(message);
+  }else if(hostConnection?.open){
+    try{hostConnection.send(message)}catch{}
+  }
 }
 
-
-/* ============================================================
-   BROADCAST
-============================================================ */
-
-function broadcastExcept(
-    excludedId,
-    data
-){
-
-    for(
-        const [
-            id,
-            connection
-        ]
-        of connections
-    ){
-
-        if(
-            id ===
-            excludedId
-        ){
-
-            continue;
-
-        }
-
-
-        if(
-            connection.open
-        ){
-
-            connection.send(
-                data
-            );
-
-        }
-
-    }
-
+/* ---------------- GAME START ---------------- */
+function startGame(message){
+  gameStarted=true;
+  editHistory.length=0;
+  $("startScreen").style.display="none";
+  setStatus(message);
+  try{renderer.domElement.requestPointerLock()}catch{}
 }
 
-
-/* ============================================================
-   PLAYER SYNC
-============================================================ */
-
-setInterval(
-    () => {
-
-        if(
-            !gameStarted
-        ){
-
-            return;
-
-        }
-
-
-        const message = {
-
-            kind:
-                "state",
-
-            player:
-                playerData()
-
-        };
-
-
-        if(
-            isHost
-        ){
-
-            for(
-                const connection
-                of connections.values()
-            ){
-
-                if(
-                    connection.open
-                ){
-
-                    connection.send(
-                        message
-                    );
-
-                }
-
-            }
-
-        }
-        else if(
-            hostConnection &&
-            hostConnection.open
-        ){
-
-            hostConnection.send(
-                message
-            );
-
-        }
-
-    },
-    80
-);
-
-
-/* ============================================================
-   MOBILE BUTTONS
-============================================================ */
-
-document
-    .querySelectorAll(
-        ".touchButton"
-    )
-    .forEach(
-        button => {
-
-            const key =
-                button.dataset.key;
-
-
-            button.addEventListener(
-                "pointerdown",
-                event => {
-
-                    event.preventDefault();
-
-
-                    keys[
-                        key
-                    ] =
-                        true;
-
-
-                    if(
-                        key ===
-                        "Space"
-                    ){
-
-                        jumpPressed =
-                            true;
-
-                    }
-
-                }
-            );
-
-
-            button.addEventListener(
-                "pointerup",
-                () => {
-
-                    keys[
-                        key
-                    ] =
-                        false;
-
-                }
-            );
-
-
-            button.addEventListener(
-                "pointercancel",
-                () => {
-
-                    keys[
-                        key
-                    ] =
-                        false;
-
-                }
-            );
-
-        }
-    );
-
-
-/* ============================================================
-   DAY / NIGHT
-============================================================ */
-
-let worldTime =
-    .16;
-
-
-function updateDayNight(
-    dt
-){
-
-    worldTime =
-        (
-            worldTime +
-            dt *
-            .012
-        ) % 1;
-
-
-    const angle =
-        worldTime *
-        Math.PI *
-        2;
-
-
-    const daylight =
-        Math.max(
-            .08,
-            (
-                Math.sin(
-                    angle
-                ) +
-                .18
-            ) /
-            1.18
-        );
-
-
-    const sky =
-        new THREE.Color()
-            .lerpColors(
-
-                new THREE.Color(
-                    0x07111e
-                ),
-
-                new THREE.Color(
-                    0x8ed1f3
-                ),
-
-                daylight
-
-            );
-
-
-    scene.background.copy(
-        sky
-    );
-
-
-    scene.fog.color.copy(
-        sky
-    );
-
-
-    sun.position.set(
-        Math.cos(
-            angle
-        ) * 45,
-
-        Math.sin(
-            angle
-        ) * 50,
-
-        22
-    );
-
-
-    sun.intensity =
-        .25 +
-        daylight *
-        2.1;
-
-
-    skyLight.intensity =
-        .4 +
-        daylight *
-        1.1;
-
-
-    document
-        .getElementById(
-            "day"
-        )
-        .textContent =
-        String(
-            Math.floor(
-                worldTime *
-                8
-            ) + 1
-        );
-
+$("soloButton").onclick=()=>{
+  isHost=false;
+  setMode("Solo");
+  startGame("SOLO MODE");
+  toast("WASD is ready!");
+};
+
+$("createButton").onclick=async()=>{
+  startGame("Starting online world...");
+
+  try{
+    peer=await connectPeer();
+    isHost=true;
+    setMode("Online Host");
+    setStatus("ONLINE · Room: "+myPeerId);
+    $("roomBox").style.display="block";
+    $("roomCode").textContent=myPeerId;
+
+    peer.on("connection",c=>setupConnection(c,true));
+    toast("Send the room code to your friend!");
+  }catch(err){
+    isHost=false;
+    setMode("Solo");
+    setStatus("SOLO MODE");
+    toast("Multiplayer unavailable. Solo still works.");
+    console.log(err);
+  }
+};
+
+$("showJoinButton").onclick=()=>{
+  $("roomBox").style.display="block";
+};
+
+$("hideJoinButton").onclick=()=>{
+  $("roomBox").style.display="none";
+};
+
+$("joinButton").onclick=async()=>{
+  const roomCode=$("joinCode").value.trim();
+
+  if(!roomCode){
+    setStatus("Enter a room code.");
+    return;
+  }
+
+  startGame("Connecting...");
+
+  try{
+    peer=await connectPeer();
+    isHost=false;
+    setMode("Joining");
+
+    const connection=peer.connect(roomCode,{
+      reliable:true,
+      serialization:"json"
+    });
+
+    hostConnection=connection;
+    setupConnection(connection,false);
+
+    setStatus("CONNECTING TO ROOM...");
+  }catch(err){
+    setMode("Solo");
+    setStatus("SOLO MODE");
+    toast("Couldn't connect. You can still play solo.");
+    console.log(err);
+  }
+};
+
+/* ---------------- DAY/NIGHT ---------------- */
+let worldTime=.16;
+let worldDay=1;
+
+function updateDayNight(dt){
+  const nextWorldTime=worldTime+dt/120;
+  if(nextWorldTime>=1) worldDay++;
+  worldTime=nextWorldTime%1;
+
+  const angle=worldTime*Math.PI*2;
+  const daylight=Math.max(.08,Math.sin(angle)*.5+.5);
+
+  currentSky.lerpColors(nightSky,daySky,daylight);
+  scene.background.copy(currentSky);
+  scene.fog.color.copy(currentSky);
+
+  sun.intensity=.35+daylight*1.85;
+  skyLight.intensity=.55+daylight*1.05;
+  sun.position.set(Math.cos(angle)*40,Math.sin(angle)*50+30,20);
+
+  dayEl.textContent=String(worldDay);
 }
 
+/* ---------------- RESIZE ---------------- */
+addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+  renderer.setSize(innerWidth,innerHeight);
+});
 
-/* ============================================================
-   GAME LOOP
-============================================================ */
+/* ---------------- LOOP ---------------- */
+let last=performance.now();
+let networkTimer=0;
 
-const clock =
-    new THREE.Clock();
+function animate(now){
+  const dt=Math.min(.05,(now-last)/1000);
+  last=now;
 
+  if(gameStarted){
+    updateMovement(dt);
+    updatePlacementPreview();
+    updateRemotePlayers(dt);
 
-function animate(){
-
-    requestAnimationFrame(
-        animate
-    );
-
-
-    const dt =
-        Math.min(
-            clock.getDelta(),
-            .033
-        );
-
-
-    if(
-        gameStarted
-    ){
-
-        updateMovement(
-            dt
-        );
-
-
-        updateDayNight(
-            dt
-        );
-
-
-        updateRemotePlayers(
-            dt
-        );
-
+    networkTimer+=dt;
+    if(networkTimer>.05){
+      networkTimer=0;
+      broadcastPlayer();
     }
+  }
 
-
-    renderer.render(
-        scene,
-        camera
-    );
-
+  updateDayNight(dt);
+  renderer.render(scene,camera);
+  requestAnimationFrame(animate);
 }
 
-
-animate();
-
-
-/* ============================================================
-   RESIZE
-============================================================ */
-
-addEventListener(
-    "resize",
-    () => {
-
-        camera.aspect =
-            innerWidth /
-            innerHeight;
-
-
-        camera.updateProjectionMatrix();
-
-
-        renderer.setSize(
-            innerWidth,
-            innerHeight
-        );
-
-    }
-);
-
+requestAnimationFrame(animate);
 </script>
-
 </body>
 </html>
